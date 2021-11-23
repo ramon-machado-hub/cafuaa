@@ -6,4 +6,5 @@ class AuthController{
     await Future.delayed(Duration(seconds: 2));
     Navigator.pushReplacementNamed(context, "/login");
   }
+
 }
