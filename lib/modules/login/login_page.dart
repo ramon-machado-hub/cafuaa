@@ -53,7 +53,9 @@ class LoginPage extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(30,20,30,0),
                   child: Button(
                       label: 'Entrar como convidado',
-                      onTap: (){}),
+                      onTap: (){
+                        Navigator.pushReplacementNamed(context, "/home");
+                      }),
                 ),
               ],
             ),

@@ -4,7 +4,7 @@ import 'app_colors.dart';
 
 class TextStyles {
   static final titleHome = GoogleFonts.lexendDeca(
-    fontSize: 32,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.heading,
   );
