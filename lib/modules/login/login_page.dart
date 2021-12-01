@@ -10,14 +10,12 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SingleChildScrollView(
         child: SizedBox(
-
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0,20,0,0),
+            padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -28,8 +26,8 @@ class LoginPage extends StatelessWidget {
                       AppImages.logoFull,
                     )),
                 Padding(
-                  padding:
-                  const EdgeInsets.only(top: 10, left: 50, right: 50),
+                  padding: const EdgeInsets.only(
+                      top: 25, left: 50, right: 50, bottom: 10),
                   child: Text(
                     "Divirta-se e convide seus amigos!",
                     textAlign: TextAlign.center,
@@ -37,25 +35,67 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(30,20,30,0),
+                  padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
                   child: Button(
-                      label: 'Novo cadastro',
-                      onTap: (){
+                      label: 'Criar uma conta',
+                      onTap: () {
                         Navigator.pushReplacementNamed(context, "/cadastro");
                       }),
                 ),
-                Padding(
+                /* Padding(
                   padding: const EdgeInsets.fromLTRB(30,20,30,0),
                   child: GoogleButton(onTap: (){}),
-                ),
+                ),*/
 
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(30,20,30,0),
+                  padding: const EdgeInsets.fromLTRB(50, 20, 50, 0),
                   child: Button(
-                      label: 'Entrar como convidado',
-                      onTap: (){
-                        Navigator.pushReplacementNamed(context, "/home");
-                      }),
+                    label: 'Entrar',
+                    /*print('entrou');
+                        //Navigator.pushReplacementNamed(context, "/home");
+                        AlertDialog(
+                          title: Text("FAÇA SEU LOGIN"),
+                          actions: [
+                            FlatButton(
+                              onPressed: () => Navigator.pop(context, false), // passing false
+                              child: Text('cancel'),
+                            ),
+                          ],
+                        );*/
+
+                    onTap: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: AppColors.shape,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.fromBorderSide(
+                                    BorderSide(
+                                      color: AppColors.stroke,
+                                    ),
+                                  )),
+
+                              child:
+                                  Center(child: const Text('Efetuar login'))),
+                        ),
+                        //content: const Text('AlertDialog description'),
+                        actions: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: GoogleButton(onTap: () {}),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancelar'),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
