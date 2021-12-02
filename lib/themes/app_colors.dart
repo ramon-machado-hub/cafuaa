@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors{
+  static final cafua = Color(0xFF000000);
+  static final buttonFace = Color(0xFF1D069A);
   static final primary = Color(0xFFFF941A);
   static final secondary = Color(0xFF585666);
   static final grey = Color(0xFF585666);

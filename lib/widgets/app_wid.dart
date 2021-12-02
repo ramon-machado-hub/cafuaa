@@ -1,5 +1,6 @@
 import 'package:cafua/modules/cadastro/cadastro_page.dart';
 import 'package:cafua/modules/home_page/home_page.dart';
+import 'package:cafua/modules/home_page/home_page_teste.dart';
 import 'package:cafua/modules/login/login_page.dart';
 import 'package:cafua/modules/mesa/mesa_config_page.dart';
 import 'package:cafua/modules/splash/splash_page.dart';
@@ -25,9 +26,9 @@ class AppWidget extends StatelessWidget {
         title: 'Cafua',
         theme: ThemeData(
             primarySwatch: Colors.orange, primaryColor: AppColors.primary),
-        initialRoute: "/login",
+        initialRoute: "/splash",
         routes: {
-          "/home": (context) => HomePage(),
+          "/home": (context) => HomePageTeste(),
           "/splash": (context) => SplashPage(),
           "/login": (context) => LoginPage(),
           "/cadastro": (context) => CadastroPage(),

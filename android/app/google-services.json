@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "741417645024",
+    "project_id": "cafua-d3046",
+    "storage_bucket": "cafua-d3046.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741417645024:android:2cb3fba42f3c52767bb185",
+        "android_client_info": {
+          "package_name": "com.example.cafua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741417645024-h7itlk0oikdkm290p1q1qi6nf2c8perp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cafua",
+            "certificate_hash": "c13a8b0c02359acdde7617b93b68387db5bf1f9f"
+          }
+        },
+        {
+          "client_id": "741417645024-2unrtlns6vk06p0fksv4atil65tengl9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAivBrLgHtiEq0HWjb3CRriKRamkhkyVaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "741417645024-2unrtlns6vk06p0fksv4atil65tengl9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,4 @@
+import 'package:cafua/modules/entrar/login_with.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
@@ -63,7 +64,7 @@ class LoginPage extends StatelessWidget {
                           ],
                         );*/
 
-                    onTap: () => showDialog<String>(
+                    /*onTap: () => showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                         title: Padding(
@@ -81,6 +82,7 @@ class LoginPage extends StatelessWidget {
                               child:
                                   Center(child: const Text('Efetuar login'))),
                         ),
+                        onTap: ()=> LoginWith(),
                         //content: const Text('AlertDialog description'),
                         actions: <Widget>[
                           Padding(
@@ -91,9 +93,10 @@ class LoginPage extends StatelessWidget {
                             onPressed: () => Navigator.pop(context, 'Cancel'),
                             child: const Text('Cancelar'),
                           ),
-
-                        ],
-                      ),
+                        */
+                    onTap: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => LoginWith(),
                     ),
                   ),
                 ),

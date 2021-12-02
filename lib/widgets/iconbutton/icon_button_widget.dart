@@ -1,12 +1,14 @@
 import 'package:cafua/themes/app_colors.dart';
-import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class GoogleButton extends StatelessWidget {
+class IconButtonWidget extends StatelessWidget {
+
   final VoidCallback onTap;
-  const GoogleButton({Key? key, required this.onTap}) : super(key: key);
+  final String imageButton;
+  final String label;
+  final Color colorButton;
+  const IconButtonWidget({Key? key, required this.onTap, required this.imageButton, required this.label, required this.colorButton}) : super(key: key);
 
 
   @override
@@ -15,8 +17,9 @@ class GoogleButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 46,
+        //color: colorButton,
         decoration: BoxDecoration(
-            color: AppColors.shape,
+            color: colorButton,
             borderRadius: BorderRadius.circular(5),
             border: Border.fromBorderSide(
               BorderSide(
@@ -32,12 +35,16 @@ class GoogleButton extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(5.0),
-                      child: Image.asset(AppImages.google),
+                      child: Image.asset(imageButton),
                     ),
-                    SizedBox(
-                      width: 4,
+                    const SizedBox(
+                      width: 6,
                     ),
-
+                    /*Container(
+                      height: 38,
+                      width: 1,
+                      color: AppColors.stroke,
+                    )*/
                   ],
                 )),
             Expanded(
@@ -46,8 +53,8 @@ class GoogleButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Entrar com Google    ",
-                    style: TextStyles.titleIconButtonBlack,
+                    label,
+                    style: TextStyles.titleIconButton,
                   ),
                 ],
               ),

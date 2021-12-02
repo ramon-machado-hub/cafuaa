@@ -19,9 +19,7 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: Padding(
         padding: const EdgeInsets.all(12.0),
         child: ClipOval(
-          child: Image(
-            image: Image.asset('assets/images/profile.jpg').image,
-          ),
+          child: Image.asset('assets/images/profile.jpg'),
         ),
       ),
     );

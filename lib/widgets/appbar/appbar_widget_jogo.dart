@@ -10,10 +10,10 @@ class AppbarJogoWidget extends StatelessWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(0,20,0,5),
             child: Container(
-              width: 60,
-              height: 60,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
@@ -30,12 +30,13 @@ class AppbarJogoWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () => Navigator.pushReplacementNamed(context, "/home"),
             ),
           ),
+
 
         ],
       ),
