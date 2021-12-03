@@ -31,17 +31,13 @@ class GoogleButton extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       child: Image.asset(AppImages.google),
                     ),
-                    SizedBox(
-                      width: 4,
-                    ),
-
                   ],
                 )),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

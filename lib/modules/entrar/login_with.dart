@@ -32,7 +32,7 @@ class LoginWith extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: IconButtonWidget(
                   colorButton: AppColors.buttonFace,
-                  label: 'Entrar com facebook ',
+                  label: 'Entrar com facebook',
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/home");
                   },
@@ -43,7 +43,7 @@ class LoginWith extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: IconButtonWidget(
                   colorButton: AppColors.body,
-                  label: 'Entrar com Cafua   ',
+                  label: 'Entrar com Cafua',
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/home");
                   },

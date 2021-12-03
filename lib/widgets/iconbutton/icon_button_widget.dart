@@ -34,21 +34,14 @@ class IconButtonWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.fromLTRB(0,5,0,5),
                       child: Image.asset(imageButton),
                     ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    /*Container(
-                      height: 38,
-                      width: 1,
-                      color: AppColors.stroke,
-                    )*/
+
                   ],
                 )),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -5,4 +5,5 @@ class AppImages {
   static const perfil = "assets/images/profile.jpg";
   static const logoFace = "assets/images/logo_face.png";
   static const trinca = "assets/images/trinca.png";
+  static const jogoCartas = "assets/images/jogo-cartas.png";
 }

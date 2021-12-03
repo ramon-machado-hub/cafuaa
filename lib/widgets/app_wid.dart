@@ -1,6 +1,7 @@
 import 'package:cafua/modules/cadastro/cadastro_page.dart';
 import 'package:cafua/modules/home_page/home_page.dart';
 import 'package:cafua/modules/home_page/home_page_teste.dart';
+import 'package:cafua/modules/jogar_online/jogar_online.dart';
 import 'package:cafua/modules/login/login_page.dart';
 import 'package:cafua/modules/mesa/mesa_config_page.dart';
 import 'package:cafua/modules/splash/splash_page.dart';
@@ -33,6 +34,7 @@ class AppWidget extends StatelessWidget {
           "/login": (context) => LoginPage(),
           "/cadastro": (context) => CadastroPage(),
           "/mesaconfig": (context) => MesaConfigPage(),
+          "/jogaronline": (context) => JogarOnline(),
         });
   }
 }
