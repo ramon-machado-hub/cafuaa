@@ -6,4 +6,6 @@ class AppImages {
   static const logoFace = "assets/images/logo_face.png";
   static const trinca = "assets/images/trinca.png";
   static const jogoCartas = "assets/images/jogo-cartas.png";
+  static const twoPlayer = "assets/images/two-people.png";
+  static const fourPlayer = "assets/images/four-people.png";
 }

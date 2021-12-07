@@ -3,10 +3,38 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class TextStyles {
+  static final titleGameButton = GoogleFonts.bangers(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: AppColors.background,
+  );
+
+  static final titleGameButton1 = GoogleFonts.sigmarOne(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: AppColors.primary,
+  );
+
+  static final titleGameCard = GoogleFonts.lexendDeca(
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
+    color: AppColors.background,
+  );
+  static final titleListGame = GoogleFonts.lexendDeca(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppColors.shape,
+  );
+  static final subTitleGameCard = GoogleFonts.lexendDeca(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: AppColors.shape,
+  );
+
   static final titleHome = GoogleFonts.lexendDeca(
     fontSize: 20,
     fontWeight: FontWeight.w600,
-    color: AppColors.heading,
+    color: AppColors.background,
   );
   static final titleRegular = GoogleFonts.lexendDeca(
     fontSize: 20,

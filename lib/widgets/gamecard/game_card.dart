@@ -8,7 +8,8 @@ class GameCard extends StatefulWidget {
   final double heigth;
   final String label;
   final String logoCard;
-  const GameCard({Key? key, required this.width,  required this.heigth,required this.label, required this.logoCard, }) : super(key: key);
+  final Color colorCard;
+  const GameCard({Key? key, required this.width,  required this.heigth,required this.label, required this.logoCard, required this.colorCard }) : super(key: key);
 
   @override
   _GameCardState createState() => _GameCardState();
@@ -22,11 +23,11 @@ class _GameCardState extends State<GameCard> {
         width: widget.width,
         height: widget.heigth,
         decoration: BoxDecoration(
-            color: AppColors.heading,
+            color: AppColors.background,
             borderRadius: BorderRadius.circular(10),
             border: Border.fromBorderSide(
               BorderSide(
-                color: AppColors.background,
+                color: widget.colorCard,
                 width: 3,
               ),
             )),
@@ -36,11 +37,11 @@ class _GameCardState extends State<GameCard> {
               padding: const EdgeInsets.all(8.0),
               child: Container(width: widget.width-20, height: widget.heigth/3 ,child: Image.asset(widget.logoCard)),
             ),
-            Text(widget.label, textAlign: TextAlign.center, style: TextStyles.titleIconButton, ),
-            Padding(padding: const EdgeInsets.all(2),
+            Text(widget.label, textAlign: TextAlign.center, style: TextStyles.subTitleGameCard, ),
+            Padding(padding: const EdgeInsets.fromLTRB(0,2,0,2),
               child: Container(
                 color: Colors.black.withOpacity(0.2),
-                child: Text("1232 online", textAlign: TextAlign.center, style: TextStyles.titleIconButton, ),),
+                child: Text("1232 online", textAlign: TextAlign.center, style: TextStyles.subTitleGameCard, ),),
             ),
           ],
         ),

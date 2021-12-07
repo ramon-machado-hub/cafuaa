@@ -1,3 +1,4 @@
+import 'package:cafua/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppbarJogoWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -5,7 +6,7 @@ class AppbarJogoWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: false,
-
+      backgroundColor: AppColors.primary,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

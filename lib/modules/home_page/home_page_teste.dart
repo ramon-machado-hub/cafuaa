@@ -1,7 +1,6 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
-import 'package:cafua/widgets/appbar/appbar_widget.dart';
 import 'package:cafua/widgets/drawer/is_drawer_widget.dart';
 import 'package:cafua/widgets/registrationbutton/button.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +17,14 @@ class _HomePageTesteState extends State<HomePageTeste> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Home',
-          style: TextStyles.buttonBoldBackground,
+        backgroundColor: AppColors.primary,
+        iconTheme: IconThemeData(color: AppColors.background),
+        title: Center(
+
+          child: Text(
+            'Home',
+            style: TextStyles.titleHome,
+          ),
         ),
       ),
       drawer: IsDrawer(),
