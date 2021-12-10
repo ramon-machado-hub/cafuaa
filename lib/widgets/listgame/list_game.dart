@@ -1,11 +1,12 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
+import 'package:cafua/widgets/button/button.dart';
 import 'package:cafua/widgets/gamecard/game_card.dart';
 import 'package:flutter/material.dart';
 
 class ListGame extends StatefulWidget {
-  const ListGame({Key? key}) : super(key: key);
+  const ListGame({Key? key,}) : super(key: key);
 
   @override
   State<ListGame> createState() => _ListGameState();
@@ -17,14 +18,14 @@ class _ListGameState extends State<ListGame> {
   var regraCanastra = "Bate com canastra LIMPA";
   var regraLixo =  "Lixo ABERTO";
   var index = 0;
-  var selectFechado = false;
   var selectAberto = true;
+  var selectFechado = false;
   var selectStbl = false;
+  var colorCard = AppColors.buttonGame;
 
   @override
-  var colorCard = AppColors.primary;
-
   Widget build(BuildContext context) {
+
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -53,9 +54,9 @@ class _ListGameState extends State<ListGame> {
                     children: [
                       GestureDetector(
                           onTap: () {
-                            colorCard = AppColors.primary;
+                            colorCard = AppColors.buttonGame;
                             index = 0;
-                            regraTrinca = "Sem trinca";
+                            regraTrinca = "SEM trinca";
                             regraCanastra = "Bate com canastra LIMPA";
                             regraLixo =  "Lixo ABERTO";
                             selectFechado=false;
@@ -70,14 +71,14 @@ class _ListGameState extends State<ListGame> {
                               logoCard: AppImages.jogoCartas,
                               colorCard: selectAberto
                                   ? colorCard
-                                  : AppColors.background)
+                                  : AppColors.primary)
                       ),
                       GestureDetector(
                         onTap: () {
-                          colorCard = AppColors.primary;
+                          colorCard = AppColors.buttonGame;
                           index = 1;
-                          regraTrinca = "Com trinca";
-                          regraCanastra = "Bate com canastra SUJA";;
+                          regraTrinca = "COM trinca";
+                          regraCanastra = "Bate com canastra SUJA";
                           regraLixo =  "Lixo FECHADO";
                           selectFechado = true;
                           selectAberto= false;
@@ -91,16 +92,16 @@ class _ListGameState extends State<ListGame> {
                             logoCard: AppImages.trinca,
                             colorCard: selectFechado
                                 ? colorCard
-                                : AppColors.background),
+                                : AppColors.primary),
                       ),
 
                       GestureDetector(
                         onTap: () {
-                          colorCard = AppColors.primary;
+                          colorCard = AppColors.buttonGame;
                           index = 2;
-                          regraTrinca = "Sem trinca";
+                          regraTrinca = "SEM trinca";
                           regraCanastra = "Bate com canastra LIMPA";
-                          regraLixo =  "Lixo Fechado";
+                          regraLixo =  "Lixo FECHADO";
                           selectFechado=false;
                           selectAberto= false;
                           selectStbl=true;
@@ -113,7 +114,7 @@ class _ListGameState extends State<ListGame> {
                             logoCard: AppImages.jogoCartas,
                             colorCard: selectStbl
                                 ? colorCard
-                                : AppColors.background),
+                                : AppColors.primary),
                       ),
                     ],
                   ),
@@ -167,25 +168,18 @@ class _ListGameState extends State<ListGame> {
               ],
             ),
           ),
-          SizedBox(
-            height: 20,
+          const SizedBox(
+            height: 15,
           ),
-          ElevatedButton(
 
-            onPressed: () {
-              Navigator.pushNamed(context, "/jogaronlineplayer");
-            },
-            child: Text(
-              'JOGAR',
-              style: TextStyles.titleGameButton1,
-            ),
-
-            style: ElevatedButton.styleFrom(
-              primary: AppColors.buttonGame,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // <-- Radius
-              ),
-            ),
+          ButtonTheme(
+            minWidth: 200.0,
+            height: 70.0,
+            child: Button(
+                label: 'JOGAR',
+                onTap: () {
+                  Navigator.pushNamed(context, "/jogaronlineplayer", arguments: regras[index]);
+                }),
           ),
         ],
       ),

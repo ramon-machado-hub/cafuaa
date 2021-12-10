@@ -1,4 +1,5 @@
 import 'package:cafua/modules/login/login_page.dart';
+import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -10,8 +11,10 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return
       Stack(
+
         children: <Widget>[
           SplashScreen(
+            backgroundColor: AppColors.primary,
             seconds: 5,
             navigateAfterSeconds: LoginPage(),
             loaderColor: Colors.transparent,

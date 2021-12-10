@@ -43,7 +43,7 @@ class GoogleButton extends StatelessWidget {
                 children: [
                   Text(
                     "Entrar com Google    ",
-                    style: TextStyles.titleIconButtonBlack,
+                    style: TextStyles.titleIconButton,
                   ),
                 ],
               ),

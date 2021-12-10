@@ -1,7 +1,7 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/widgets/appbar/appbar_widget.dart';
-import 'package:cafua/widgets/registrationbutton/button.dart';
+import 'package:cafua/widgets/button/button.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,8 +29,9 @@ class _HomePageState extends State<HomePage> {
                 child: Image.asset(
                   AppImages.logoFull,
                 )),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(25,25,25,25),
+            ButtonTheme(
+              minWidth: 200.0,
+              height: 70.0,
               child: Button(
                   onTap: (){
                     Navigator.pushReplacementNamed(context, "/mesaconfig");
@@ -39,8 +40,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(width: 0,height: 10),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(25,25,25,25),
+            ButtonTheme(
+                minWidth: 200.0,
+                height: 70.0,
               child: Button(
                   onTap: (){}, label: 'Criar uma mesa'
               ),

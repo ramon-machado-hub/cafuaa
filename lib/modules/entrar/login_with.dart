@@ -1,5 +1,6 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
+import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/googlebutton/google_button.dart';
 import 'package:cafua/widgets/iconbutton/icon_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,8 @@ class LoginWith extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Center(child: Text("Faça seu login")),
+      title: const Center(child: Text("Faça seu login")),
+      backgroundColor: AppColors.input,
       content: SingleChildScrollView(
           child: ListBody(children: <Widget>[
               Container(
@@ -31,7 +33,8 @@ class LoginWith extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: IconButtonWidget(
-                  colorButton: AppColors.buttonFace,
+                  text_styles: TextStyles.titleIconButton,
+                  colorButton:  AppColors.shape,
                   label: 'Entrar com facebook',
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/home");
@@ -42,12 +45,13 @@ class LoginWith extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: IconButtonWidget(
-                  colorButton: AppColors.body,
+                  text_styles: TextStyles.titleIconButton,
+                  colorButton: AppColors.shape,
                   label: 'Entrar com Cafua',
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/home");
                   },
-                  imageButton: AppImages.logoFull,
+                  imageButton: AppImages.logoBlack,
                 ),
               ),
             ])),

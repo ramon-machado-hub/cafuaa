@@ -2,7 +2,7 @@ import 'package:cafua/modules/entrar/login_with.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
-import 'package:cafua/widgets/registrationbutton/button.dart';
+import 'package:cafua/widgets/button/button.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       body: SingleChildScrollView(
         child: SizedBox(
           child: Padding(
@@ -25,35 +25,41 @@ class LoginPage extends StatelessWidget {
                     child: Image.asset(
                       AppImages.logoFull,
                     )),
+
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 25, left: 50, right: 50, bottom: 10),
+                      top: 25, left: 50, right: 50, bottom: 20),
                   child: Text(
                     "Divirta-se e convide seus amigos!",
                     textAlign: TextAlign.center,
-                    style: TextStyles.titleRegular,
+                    style: TextStyles.titleLoginPage,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
+                  padding: const EdgeInsets.all(20),
+                  child: ButtonTheme(
+
+                    minWidth: 200.0,
+                    height: 70.0,
+                    child: Button(
+                      label: 'ENTRAR',
+                      onTap: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => const LoginWith(),
+                      ),
+                    ),
+                  ),
+                ),
+                ButtonTheme(
+                  minWidth: 200.0,
+                  height: 70.0,
                   child: Button(
-                      label: 'Criar uma conta',
+                      label: 'CRIAR CONTA',
                       onTap: () {
                         Navigator.pushReplacementNamed(context, "/cadastro");
                       }),
                 ),
 
-
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50, 20, 50, 0),
-                  child: Button(
-                    label: 'Entrar',
-                    onTap: () => showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => const LoginWith(),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

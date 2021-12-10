@@ -3,7 +3,8 @@ import 'package:cafua/modules/home_page/home_page_teste.dart';
 import 'package:cafua/modules/jogar_online/jogar_online.dart';
 import 'package:cafua/modules/jogar_online/jogar_online_player.dart';
 import 'package:cafua/modules/login/login_page.dart';
-import 'package:cafua/modules/mesa/mesa_config_page.dart';
+import 'package:cafua/modules/mesa/table_page.dart';
+import 'package:cafua/modules/playwithfriends/play_with_friends.dart';
 import 'package:cafua/modules/splash/splash_page.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:flutter/services.dart';
 class AppWidget extends StatelessWidget {
 
 
-  AppWidget(){
+  AppWidget({Key? key}) : super(key: key){
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
@@ -29,13 +30,14 @@ class AppWidget extends StatelessWidget {
             primarySwatch: Colors.orange, primaryColor: AppColors.primary),
         initialRoute: "/splash",
         routes: {
-          "/home": (context) => HomePageTeste(),
-          "/splash": (context) => SplashPage(),
-          "/login": (context) => LoginPage(),
+          "/home": (context) => const HomePageTeste(),
+          "/splash": (context) => const  SplashPage(),
+          "/login": (context) => const LoginPage(),
           "/cadastro": (context) => CadastroPage(),
-          "/mesaconfig": (context) => MesaConfigPage(),
-          "/jogaronline": (context) => JogarOnline(),
-          "/jogaronlineplayer": (context) => JogarOnlinePlayer(),
+          "/mesa": (context) => TablePage(labelGame: ModalRoute.of(context)!.settings.arguments.toString(),imageGame: ModalRoute.of(context)!.settings.arguments.toString(),),
+          "/jogaronline": (context) => const JogarOnline(),
+          "/jogaronlineplayer": (context) => JogarOnlinePlayer(label: ModalRoute.of(context)!.settings.arguments.toString(),),
+          "/jogarcomamigos": (context) => const PlayWithFriends(),
         });
   }
 }

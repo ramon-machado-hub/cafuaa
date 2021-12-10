@@ -1,6 +1,7 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
+import 'package:cafua/widgets/button/button.dart';
 import 'package:cafua/widgets/cardplayer/card_player.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,10 @@ class ListPlayer extends StatefulWidget {
 }
 
 class _ListPlayerState extends State<ListPlayer> {
+  var selectTwoPlayer = true;
+  var selectFourPlayer = false;
+  var colorCard = AppColors.buttonGame;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -25,7 +30,7 @@ class _ListPlayerState extends State<ListPlayer> {
         children: [
           Container(
             //color: AppColors.input.withOpacity(0.3),
-            height: size.height * 0.5,
+            height: size.height * 0.45,
             width: size.width - 30,
             decoration: BoxDecoration(
                 color: AppColors.heading,
@@ -54,10 +59,10 @@ class _ListPlayerState extends State<ListPlayer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("DESAFIO",
-                            style: TextStyles.captionBackground,
+                            style: TextStyles.titleListGame,
                           ),
                           Text(widget.labelGame,
-                            style: TextStyles.titleBoldBackground,
+                            style: TextStyles.titleLoginPage,
                           )
                         ],
                       ),
@@ -69,17 +74,38 @@ class _ListPlayerState extends State<ListPlayer> {
                     child: Wrap(
                       direction: Axis.horizontal,
                       children: [
-                        CardPlayer(
-                            width: size.width / 3.5,
-                            label: "2 Jogadores",
-                            logoPerson: AppImages.twoPlayer),
+                        GestureDetector(
+                          onTap: () {
+                            selectTwoPlayer = true;
+                            selectFourPlayer = false;
+                            setState(() {});
+                          },
+                          child: CardPlayer(
+                              color: selectTwoPlayer
+                              ? colorCard
+                              : AppColors.primary,
+                              width: size.width / 3.3,
+                              label: "2 Jogadores",
+                              logoPerson: AppImages.twoPlayer),
+                        ),
                         SizedBox(
                           width: (size.width-((size.width / 3)*2)+32)/4,
                         ),
-                        CardPlayer(
-                            width: size.width / 3.5,
-                            label: "4 Jogadores",
-                            logoPerson: AppImages.fourPlayer)
+                        GestureDetector(
+                          onTap: (){
+                            selectTwoPlayer=false;
+                            selectFourPlayer=true;
+                            selectFourPlayer=true;
+                            setState(() {});
+                          },
+                          child: CardPlayer(
+                              color: selectFourPlayer
+                                  ? colorCard
+                                  : AppColors.primary,
+                              width: size.width / 3.3,
+                              label: "4 Jogadores",
+                              logoPerson: AppImages.fourPlayer),
+                        )
                       ],
                     ),
                   ),
@@ -87,6 +113,20 @@ class _ListPlayerState extends State<ListPlayer> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 15,
+          ),
+          ButtonTheme(
+            minWidth: 200.0,
+            height: 70.0,
+            child: Button(
+              label: 'JOGAR AGORA',
+              onTap: (){
+                Navigator.pushReplacementNamed(context, "/mesa");
+              },
+            ),
+          ),
+          /*
           ElevatedButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, "/jogaronlineplayer");
@@ -98,7 +138,7 @@ class _ListPlayerState extends State<ListPlayer> {
                 borderRadius: BorderRadius.circular(12), // <-- Radius
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );

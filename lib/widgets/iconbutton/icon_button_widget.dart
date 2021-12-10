@@ -8,7 +8,8 @@ class IconButtonWidget extends StatelessWidget {
   final String imageButton;
   final String label;
   final Color colorButton;
-  const IconButtonWidget({Key? key, required this.onTap, required this.imageButton, required this.label, required this.colorButton}) : super(key: key);
+  final TextStyle text_styles;
+  const IconButtonWidget({Key? key, required this.onTap, required this.imageButton, required this.label, required this.colorButton, required this.text_styles}) : super(key: key);
 
 
   @override
@@ -47,7 +48,7 @@ class IconButtonWidget extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: TextStyles.titleIconButton,
+                    style: text_styles,
                   ),
                 ],
               ),

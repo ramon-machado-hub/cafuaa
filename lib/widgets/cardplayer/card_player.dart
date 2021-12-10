@@ -6,12 +6,14 @@ class CardPlayer extends StatefulWidget {
   final double width;
   final String label;
   final String logoPerson;
+  final Color color;
 
   const CardPlayer(
       {Key? key,
       required this.width,
       required this.label,
-      required this.logoPerson})
+      required this.logoPerson,
+        required this.color,})
       : super(key: key);
 
   @override
@@ -30,7 +32,7 @@ class _CardPlayerState extends State<CardPlayer> {
             borderRadius: BorderRadius.circular(10),
             border: Border.fromBorderSide(
               BorderSide(
-                color: AppColors.background,
+                color: widget.color,
                 width: 3,
               ),
             )),
@@ -43,7 +45,7 @@ class _CardPlayerState extends State<CardPlayer> {
             ),
             Text(
               widget.label,
-              style: TextStyles.titleIconButton,
+              style: TextStyles.subTitleGameCard,
             )
           ],
         ),

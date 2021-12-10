@@ -1,8 +1,8 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
+import 'package:cafua/widgets/button/button.dart';
 import 'package:cafua/widgets/drawer/is_drawer_widget.dart';
-import 'package:cafua/widgets/registrationbutton/button.dart';
 import 'package:flutter/material.dart';
 
 class HomePageTeste extends StatefulWidget {
@@ -17,14 +17,12 @@ class _HomePageTesteState extends State<HomePageTeste> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: AppColors.primary,
         iconTheme: IconThemeData(color: AppColors.background),
-        title: Center(
-
-          child: Text(
-            'Home',
-            style: TextStyles.titleHome,
-          ),
+        title: Text(
+          'Home',
+          style: TextStyles.titleAppbar,
         ),
       ),
       drawer: IsDrawer(),
@@ -41,20 +39,22 @@ class _HomePageTesteState extends State<HomePageTeste> {
                 child: Image.asset(
                   AppImages.logoFull,
                 )),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(25, 25, 25, 25),
+            ButtonTheme(
+              minWidth: 200.0,
+              height: 65.0,
               child: Button(
                   onTap: () {
                     Navigator.pushNamed(context, "/jogaronline");
                   },
-                  label: 'Jogar on-line'),
+                  label: 'JOGAR ON LINE'),
             ),
-            SizedBox(width: 0, height: 10),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(25, 15, 25, 25),
+            const SizedBox(height: 25  ),
+            ButtonTheme(
+              minWidth: 200.0,
+              height: 65.0,
               child: Button(onTap: () {
-                Navigator.pushReplacementNamed(context, "/mesaconfig");
-              }, label: 'Criar uma mesa'),
+                Navigator.pushReplacementNamed(context, "/jogarcomamigos");
+              }, label: 'CRIE SUA MESA'),
             ),
 
           ],

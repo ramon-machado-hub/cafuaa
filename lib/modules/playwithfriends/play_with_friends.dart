@@ -1,37 +1,33 @@
 import 'package:cafua/themes/app_colors.dart';
-import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
-import 'package:cafua/widgets/listplayer/list_player.dart';
+import 'package:cafua/widgets/listgame/list_game.dart';
 import 'package:flutter/material.dart';
 
-class JogarOnlinePlayer extends StatefulWidget {
-  final String label;
-  const JogarOnlinePlayer({Key? key, required this.label}) : super(key: key);
+class PlayWithFriends extends StatelessWidget {
+  const PlayWithFriends({Key? key}) : super(key: key);
 
-  @override
-  _JogarOnlinePlayerState createState() => _JogarOnlinePlayerState();
-}
-
-class _JogarOnlinePlayerState extends State<JogarOnlinePlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColors.background),
         centerTitle: true,
+        iconTheme: IconThemeData(color: AppColors.background),
         backgroundColor: AppColors.primary,
         title: Text(
-          'JOGAR ONLINE',
+          'JOGAR COM AMIGOS',
           style: TextStyles.titleAppbar,
         ),
       ),
-      body: Padding(
+      body:
 
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+      const Padding(
 
-        child: ListPlayer(imageGame: AppImages.jogoCartas, labelGame: this.widget.label),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+
+        child: ListGame(),
       ),
+
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(0.0),
         child: Container(

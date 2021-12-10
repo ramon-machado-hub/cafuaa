@@ -2,8 +2,8 @@ import 'package:cafua/controller/cadastro_page_controller.dart';
 import 'package:cafua/controller/validator.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_text_styles.dart';
+import 'package:cafua/widgets/button/button.dart';
 import 'package:cafua/widgets/input_text/input_text_widget.dart';
-import 'package:cafua/widgets/registrationbutton/button.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 

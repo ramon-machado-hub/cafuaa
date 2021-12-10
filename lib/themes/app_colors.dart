@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppColors{
   static final cafua = Color(0xFF000000);
-  static final buttonFace = Color(0xFF020011);
+  static final buttonFace = Color(0xFF4267B2);
   static final buttonGame = Color(0xFFFFFF00);
-  static final primary = Color(0xFF03011F);
-  static final secondary = Color(0xFF585666);
+  static final primary = Color(0xFF060239);
+  static final secondary = Color(0xFF282828);
   static final grey = Color(0xFF585666);
   static final delete = Color(0xFFE83F5B);
   static final heading = Color(0xFF585666);

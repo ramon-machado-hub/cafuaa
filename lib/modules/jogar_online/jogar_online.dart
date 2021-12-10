@@ -11,19 +11,19 @@ class JogarOnline extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        centerTitle: true,
         iconTheme: IconThemeData(color: AppColors.background),
         backgroundColor: AppColors.primary,
-        title: Center(
-            child: Text(
+        title: Text(
           'Jogar Online',
-          style: TextStyles.titleBoldBackground,
-        )),
+          style: TextStyles.titleAppbar,
+        ),
       ),
       body:
 
       const Padding(
 
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
 
         child: ListGame(),
       ),
