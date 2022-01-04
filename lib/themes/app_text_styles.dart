@@ -9,6 +9,12 @@ class TextStyles {
     color: AppColors.shape,
   );
 
+  static final titleCheckbox1 = GoogleFonts.lexendDeca(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: AppColors.shape,
+  );
+
   static final titleGameAppbar = GoogleFonts.bangers(
     fontSize: 18,
     fontWeight: FontWeight.w600,

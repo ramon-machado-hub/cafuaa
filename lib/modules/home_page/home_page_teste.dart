@@ -53,7 +53,7 @@ class _HomePageTesteState extends State<HomePageTeste> {
               minWidth: 200.0,
               height: 65.0,
               child: Button(onTap: () {
-                Navigator.pushReplacementNamed(context, "/jogarcomamigos");
+                Navigator.pushNamed(context, "/jogarcomamigos");
               }, label: 'CRIE SUA MESA'),
             ),
 
