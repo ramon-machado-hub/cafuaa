@@ -176,6 +176,7 @@ class _ListGameState extends State<ListGame> {
             minWidth: 200.0,
             height: 70.0,
             child: Button(
+                colorButton: AppColors.buttonGame,
                 label: 'JOGAR',
                 onTap: () {
                   Navigator.pushNamed(context, "/jogaronlineplayer", arguments: regras[index]);

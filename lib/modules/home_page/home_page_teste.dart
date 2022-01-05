@@ -43,6 +43,7 @@ class _HomePageTesteState extends State<HomePageTeste> {
               minWidth: 200.0,
               height: 65.0,
               child: Button(
+                colorButton: AppColors.buttonGame,
                   onTap: () {
                     Navigator.pushNamed(context, "/jogaronline");
                   },
@@ -52,7 +53,9 @@ class _HomePageTesteState extends State<HomePageTeste> {
             ButtonTheme(
               minWidth: 200.0,
               height: 65.0,
-              child: Button(onTap: () {
+              child: Button(
+                  colorButton: AppColors.buttonGame,
+                  onTap: () {
                 Navigator.pushNamed(context, "/jogarcomamigos");
               }, label: 'CRIE SUA MESA'),
             ),

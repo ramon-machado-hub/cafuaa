@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:cafua/widgets/app_wid.dart';
 import 'package:flutter/material.dart';
 

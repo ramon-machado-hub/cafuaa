@@ -103,6 +103,7 @@ class CadastroPage extends StatelessWidget {
                   validator: controller.validatePassword,
                 ),
                 Button(
+                  colorButton: AppColors.buttonGame,
                   label: 'Cadastrar',
                   onTap: (){
                     final isValid = _form.currentState!.validate();

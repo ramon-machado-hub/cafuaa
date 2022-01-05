@@ -1,3 +1,4 @@
+import 'package:cafua/arguments/table_two_arguments.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
@@ -180,9 +181,10 @@ class _TableConfigState extends State<TableConfig> {
               minWidth: 200.0,
               height: 60.0,
               child: Button(
+                  colorButton: AppColors.buttonGame,
                   label: 'JOGAR',
                   onTap: () {
-                    Navigator.pushNamed(context, "/tablepage");
+                    Navigator.pushNamed(context, "/tablepage2", arguments: TableTwoArguments("BURACO ABERTO", "PARTIDA ÚNICA"));
                     //Navigator.pushNamed(context, "/jogaronlineplayer", arguments: regras[index]);
                   }),
             ),

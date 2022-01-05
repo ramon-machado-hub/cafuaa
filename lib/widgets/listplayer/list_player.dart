@@ -120,6 +120,7 @@ class _ListPlayerState extends State<ListPlayer> {
             minWidth: 200.0,
             height: 70.0,
             child: Button(
+              colorButton: AppColors.buttonGame,
               label: 'JOGAR AGORA',
               onTap: (){
                 Navigator.pushReplacementNamed(context, "/mesa");

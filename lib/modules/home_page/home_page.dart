@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
               minWidth: 200.0,
               height: 70.0,
               child: Button(
+                colorButton: AppColors.buttonGame,
                   onTap: (){
                     Navigator.pushReplacementNamed(context, "/mesaconfig");
                   },
@@ -44,6 +45,7 @@ class _HomePageState extends State<HomePage> {
                 minWidth: 200.0,
                 height: 70.0,
               child: Button(
+                colorButton: AppColors.buttonGame,
                   onTap: (){}, label: 'Criar uma mesa'
               ),
             ),

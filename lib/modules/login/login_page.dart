@@ -42,6 +42,7 @@ class LoginPage extends StatelessWidget {
                     minWidth: 200.0,
                     height: 70.0,
                     child: Button(
+                      colorButton: AppColors.buttonGame,
                       label: 'ENTRAR',
                       onTap: () => showDialog<String>(
                         context: context,
@@ -54,6 +55,7 @@ class LoginPage extends StatelessWidget {
                   minWidth: 200.0,
                   height: 70.0,
                   child: Button(
+                    colorButton: AppColors.buttonGame,
                       label: 'CRIAR CONTA',
                       onTap: () {
                         Navigator.pushReplacementNamed(context, "/cadastro");

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
   final String label;
+  final Color colorButton;
   final VoidCallback onTap;
-  const Button({Key? key, required this.onTap, required this.label}) : super(key: key);
+  const Button({Key? key, required this.onTap, required this.colorButton, required this.label}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-
-      color: AppColors.buttonGame,
+      color: colorButton,
       onPressed: onTap,
       child: Text(
         label,
