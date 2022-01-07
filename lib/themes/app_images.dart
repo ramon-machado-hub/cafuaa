@@ -1,5 +1,10 @@
 class AppImages {
   static const logoFull = "assets/images/logofull.png";
+  static const cardBack = "assets/images/backcard1.jpg";
+  static const heart = "assets/images/heart.png";
+  static const club = "assets/images/club.png";
+  static const diamond = "assets/images/diamond.png";
+  static const spade = "assets/images/spade.png";
   static const logoBlack = "assets/images/logoblack.png";
   static const union = "assets/images/union.png";
   static const google = "assets/images/google.png";

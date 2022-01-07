@@ -23,11 +23,14 @@ class AppWidget extends StatelessWidget {
     ]);
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: AppColors.background));
+
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
+      //debugShowCheckedModeBanner: false,
         title: 'Cafua',
         theme: ThemeData(
             primarySwatch: Colors.orange, primaryColor: AppColors.primary),

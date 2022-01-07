@@ -148,7 +148,7 @@ class _TablePage2State extends State<TablePage2> {
                             textStyle: MaterialStateProperty.all<TextStyle>(TextStyles.titleIconButtonWhite),
                           ),
                           onPressed: () {},
-                          child: const Text('Alterar Jogo'),
+                          child: const Text('Alterar Regras do Jogo'),
 
                       ),
                     ),

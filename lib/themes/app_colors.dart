@@ -9,7 +9,7 @@ class AppColors{
   static final grey = Color(0xFF585666);
   static final delete = Color(0xFFE83F5B);
   static final red = Color(0xFFDB042C);
-  static final blue = Color(0xFF094892);
+  static final blue = Color(0xFF5192DE);
   static final heading = Color(0xFF585666);
   static final body = Color(0xFF706E7A);
   static final stroke = Color(0xFFE3E3E6);
