@@ -1,6 +1,5 @@
 import 'package:cafua/arguments/table_two_arguments.dart';
 import 'package:cafua/themes/app_colors.dart';
-import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/button/button.dart';
 import 'package:flutter/material.dart';
@@ -36,90 +35,6 @@ class _TablePage2State extends State<TablePage2> {
         child: Column(
           children: [
             //container tipo buraco + logoplayers
-            /* Padding(
-              padding: const EdgeInsets.fromLTRB(0,20,0,0),
-              child: Container(
-                height: size.height * 0.20,
-                width: size.width*0.90,
-                decoration: BoxDecoration(
-                    color: AppColors.stroke,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: AppColors.shape,
-                        width: 2,
-                      ),
-                    )),
-                child: Column(
-                  children: [
-
-                    Expanded(
-                      flex: 2,
-                      child: Row(
-                        children: [
-                          //imagem carta+label
-                          Expanded(flex: 8, child: Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: Row(
-                              children: [
-                                Image.asset(AppImages.jogoCartas),
-                                const FittedBox(
-                                    fit: BoxFit.fitHeight,
-                                    child: Text("Buraco STBL")),
-                              ],
-                            ),
-                          )),
-                          //divider
-                          Expanded(
-                            flex: 1,
-                            child: VerticalDivider(
-                              color: AppColors.shape,
-                              thickness: 1,
-                            ),
-                          ),
-                          //logo jogador + label
-                          Expanded(
-                              flex: 8,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex:2,
-                                    child: Image.asset(
-                                        AppImages.twoPlayer),
-                                  ),
-                                 const Expanded(
-                                     flex: 4,
-                                     child: FittedBox(
-                                         fit: BoxFit.fitWidth,
-                                         child: Padding(
-                                           padding: EdgeInsets.fromLTRB(5,0,5,0),
-                                           child: Text("2 JOGADORES"),
-                                         ))),
-                                ],
-                              )),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: AppColors.shape,
-                      height: 0,
-                      thickness: 1,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Row(
-                          children: const [
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Text("Partida 3.000 pontos",style: TextStyle(fontSize: 18),),
-                            )
-                          ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),*/
             Padding(
               padding: const EdgeInsets.fromLTRB(0,20,0,0),
               child: Container(
@@ -180,7 +95,7 @@ class _TablePage2State extends State<TablePage2> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.fromBorderSide(
                                     BorderSide(
-                                      color: AppColors.buttonGame,
+                                      color: AppColors.red,
                                       width: 3,
                                     ),
                                   )),
@@ -225,9 +140,13 @@ class _TablePage2State extends State<TablePage2> {
                                       width: 3,
                                     ),
                                   )),
-                              child: Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Image.asset(AppImages.perfil),
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  color: AppColors.stroke,
+                                  //size: 36.0,
+                                ),
                               )),
                           //texto jogador 1
                           Text(

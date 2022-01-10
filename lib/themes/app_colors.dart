@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors{
   static final cafua = Color(0xFF000000);
+  static final black = Color(0xFF000000);
   static final buttonFace = Color(0xFF4267B2);
   static final buttonGame = Color(0xFFFFFF00);
   static final primary = Color(0xFF060239);

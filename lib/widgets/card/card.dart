@@ -65,7 +65,7 @@ class _CardsState extends State<Cards> {
 
           //naipe inferior
           Positioned(
-            top: widget.height*0.68,
+            top: widget.height*0.66,
             right: 3,
             child: SizedBox(
               height: widget.height*0.125,
@@ -75,7 +75,7 @@ class _CardsState extends State<Cards> {
 
           //numero inferior
           Positioned(
-            top: widget.height*0.80,
+            bottom: 1,
             right: 3,
             child: SizedBox(
                 height: widget.height*0.2,
