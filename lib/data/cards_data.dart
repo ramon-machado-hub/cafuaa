@@ -1,6 +1,7 @@
+
+/*
 import 'package:cafua/models/card_model.dart';
 import 'package:cafua/themes/app_colors.dart';
-
 Map CardsData = {
   '1': CardModel(
       characters: 'A',
@@ -759,3 +760,5 @@ Map CardsData = {
       tpBaralho: 2,
       pontosCard: 10),
 };
+
+*/

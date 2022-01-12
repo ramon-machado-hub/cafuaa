@@ -1,5 +1,6 @@
 import 'package:cafua/arguments/table_two_arguments.dart';
 import 'package:cafua/modules/cadastro/cadastro_page.dart';
+import 'package:cafua/modules/game/game_four_players.dart';
 import 'package:cafua/modules/game/game_two_players.dart';
 import 'package:cafua/modules/home_page/home_page_teste.dart';
 import 'package:cafua/modules/jogar_online/jogar_online.dart';
@@ -41,6 +42,7 @@ class AppWidget extends StatelessWidget {
           "/login": (context) => const LoginPage(),
           "/cadastro": (context) => CadastroPage(),
           "/game2": (context) => const GameTwoPlayers(),
+          "/game4": (context) => const GameFourPlayers(),
           "/tablepage2": (context) => TablePage2(arguments: ModalRoute.of(context)!.settings.arguments as TableTwoArguments,),
           "/tablepage4": (context) => const TablePage4(),
           "/jogaronline": (context) => const JogarOnline(),

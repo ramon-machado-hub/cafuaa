@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:cafua/data/cards_data.dart';
+import 'package:cafua/models/card_model.dart';
+import 'package:cafua/models/user_model.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
@@ -5,6 +10,7 @@ import 'package:cafua/widgets/card/card.dart';
 import 'package:cafua/widgets/cardback/card_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 
 class GameTwoPlayers extends StatefulWidget {
   const GameTwoPlayers({Key? key}) : super(key: key);
@@ -15,9 +21,15 @@ class GameTwoPlayers extends StatefulWidget {
 
 class _GameTwoPlayersState extends State<GameTwoPlayers> {
   int contCardLixo = 59;
+  late List<Cards> items;
+
+  //get cards => CardsData;
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return Scaffold(
       //mesa
@@ -28,10 +40,10 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             //container jogos dos adversários
             Positioned(
               bottom: size.height * 0.59,
-              left: size.width*0.05/2,
+              left: size.width * 0.05 / 2,
               child: Container(
                 height: size.height * 0.24,
-                width: size.width*0.95,
+                width: size.width * 0.95,
                 decoration: BoxDecoration(
                     color: AppColors.stroke,
                     borderRadius: BorderRadius.circular(5),
@@ -48,8 +60,9 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                       top: 0,
                       left: 0,
                       child: Cards(
-                        width: size.width/10,
-                        height: size.height/10,
+                        selected: false,
+                        width: size.width / 10,
+                        height: size.height / 10,
                         color: AppColors.cafua,
                         number: '3',
                         naipe: AppImages.spade,
@@ -62,7 +75,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
 
             //imagem jogador 2 adversário
             Positioned(
-              top: size.height*0.1,
+              top: size.height * 0.1,
               left: 35,
               height: 80,
               width: 80,
@@ -90,14 +103,14 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             //fusso do lixo
             Positioned(
               bottom: size.height * 0.445,
-              left: size.width*0.05/2,
+              left: size.width * 0.05 / 2,
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   contCardLixo--;
                   setState(() {});
                 },
                 child: CardBack(
-                  width: size.width*0.15,
+                  width: size.width * 0.15,
                   height: size.height * 0.13,
                 ),
               ),
@@ -106,10 +119,10 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             //quantidade cartas fusso
             Positioned(
                 bottom: size.height * 0.445,
-                left: size.width*0.05/2,
+                left: size.width * 0.05 / 2,
                 child: Container(
-                  width: size.width*0.07,
-                  height: size.width*0.07,
+                  width: size.width * 0.07,
+                  height: size.width * 0.07,
                   decoration: BoxDecoration(
                     color: AppColors.cafua.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(2),
@@ -118,16 +131,17 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                       fit: BoxFit.contain,
                       child: Padding(
                         padding: const EdgeInsets.all(0.5),
-                        child: Text(contCardLixo.toString(), style: TextStyles.subTitleGameCard,),
+                        child: Text(contCardLixo.toString(),
+                          style: TextStyles.subTitleGameCard,),
                       )),
                 )),
 
             //pontuação player
             Positioned(
               bottom: size.height * 0.155,
-              left: (size.width/2) - (size.width*0.25)/2,
+              left: (size.width / 2) - (size.width * 0.25) / 2,
               child: Container(
-                width: size.width*0.25,
+                width: size.width * 0.25,
                 height: size.height * 0.04,
                 decoration: BoxDecoration(
                     color: AppColors.shape.withOpacity(0.1),
@@ -138,7 +152,8 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                         width: 2,
                       ),
                     )),
-                child: Center(child: Text('Nós: 0', style: TextStyles.subTitleGameCard,)),
+                child: Center(
+                    child: Text('Nós: 0', style: TextStyles.subTitleGameCard,)),
               ),
             ),
 
@@ -146,9 +161,9 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             //pontuação adversário
             Positioned(
               top: size.height * 0.12,
-              left: (size.width/2) - (size.width*0.25)/2,
+              left: (size.width / 2) - (size.width * 0.25) / 2,
               child: Container(
-                width: size.width*0.25,
+                width: size.width * 0.25,
                 height: size.height * 0.04,
                 decoration: BoxDecoration(
                     color: AppColors.shape.withOpacity(0.1),
@@ -159,17 +174,18 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                         width: 2,
                       ),
                     )),
-                child: Center(child: Text('Eles: 0', style: TextStyles.subTitleGameCard,)),
+                child: Center(child: Text(
+                  'Eles: 0', style: TextStyles.subTitleGameCard,)),
               ),
             ),
 
             //container do lixo 14%
             Positioned(
               bottom: size.height * 0.445,
-              left: size.width*0.2,
+              left: size.width * 0.2,
               child: Container(
                 height: size.height * 0.14,
-                width: size.width*0.775,
+                width: size.width * 0.775,
                 decoration: BoxDecoration(
                     color: AppColors.stroke,
                     borderRadius: BorderRadius.circular(5),
@@ -183,11 +199,12 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                 child: Stack(
                   children: [
                     Positioned(
-                      top: (size.height*0.01)/3,
+                      top: (size.height * 0.01) / 3,
                       left: 2,
-                      child:  Cards(
+                      child: Cards(
+                        selected: false,
                         width: size.width * 0.13,
-                        height:  size.height * 0.13,
+                        height: size.height * 0.13,
                         naipe: AppImages.heart,
                         number: '3',
                         color: AppColors.red,
@@ -207,10 +224,10 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             //container cartas do jogador 24%
             Positioned(
               bottom: size.height * 0.2,
-              left: size.width*0.05/2,
+              left: size.width * 0.05 / 2,
               child: Container(
                 height: size.height * 0.24,
-                width: size.width*0.95,
+                width: size.width * 0.95,
                 decoration: BoxDecoration(
                     color: AppColors.stroke,
                     borderRadius: BorderRadius.circular(5),
@@ -226,8 +243,9 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                       top: 0,
                       left: 0,
                       child: Cards(
-                        width: size.width/10,
-                        height: size.height/10,
+                        selected: false,
+                        width: size.width / 10,
+                        height: size.height / 10,
                         color: AppColors.red,
                         number: '4',
                         naipe: AppImages.heart,
@@ -259,6 +277,30 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             ),
 
             //cartas jogador 15% heigth
+           /* Positioned(
+                bottom: 0,
+                left: 0,
+                child: ListView.builder(
+
+                  itemCount: cards.length,
+                  itemBuilder: (ctx, i) {
+                    return Cards(
+                      color: cards
+                          .elementAt(i)
+                          .color,
+                      width: size.width * 0.15,
+                      height: size.height * 0.15,
+                      naipe: cards
+                          .elementAt(i)
+                          .naipe+".png",
+                      number: cards
+                          .elementAt(i)
+                          .character,
+                    );
+                  }
+
+                )
+            ),*/
             Positioned(
               bottom: 0,
               child: Container(
@@ -268,6 +310,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                 child: Row(
                   children: [
                     Cards(
+                      selected: false,
                       width: size.width * 0.15,
                       height: size.height * 0.15,
                       naipe: AppImages.joker,
@@ -275,6 +318,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                       color: AppColors.red,
                     ),
                     Cards(
+                      selected: false,
                       width: size.width * 0.15,
                       height: size.height * 0.15,
                       naipe: AppImages.diamond,
@@ -282,6 +326,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                       color: AppColors.red,
                     ),
                     Cards(
+                      selected: false,
                       width: size.width * 0.15,
                       height: size.height * 0.15,
                       naipe: AppImages.diamond,
@@ -289,6 +334,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                       color: AppColors.red,
                     ),
                     Cards(
+                      selected: false,
                       width: size.width * 0.15,
                       height: size.height * 0.15,
                       naipe: AppImages.club,
@@ -307,7 +353,8 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                 color: AppColors.cafua,
                 height: size.height * 0.1,
                 width: size.width,
-                child: Center(child: Text('ANUNCIO ADMOB',style: TextStyles.titleBoldBackground,)),
+                child: Center(child: Text(
+                  'ANUNCIO ADMOB', style: TextStyles.titleBoldBackground,)),
               ),
             ),
           ],
@@ -316,5 +363,11 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
       //cartas do jogador 15%
 
     );
+  }
+
+  Future<List<CardModel>>ReadJsonData() async {
+    final jsondata = await rootBundle.loadString('jsonfile/cards_json.json');
+    final list = json.decode(jsondata) as List<dynamic>;
+    return list.map((e) => CardModel.fromJson(e)).toList();
   }
 }

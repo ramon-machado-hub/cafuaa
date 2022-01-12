@@ -191,7 +191,7 @@ class _TablePage2State extends State<TablePage2> {
                       label: 'CONVIDAR AMIGOS',
                       colorButton: AppColors.buttonGame,
                       onTap: () {
-                        Navigator.pushNamed(context, "/game2");
+                        Navigator.pushNamed(context, "/game4");
                       }),
                 ),
               ),
@@ -200,7 +200,7 @@ class _TablePage2State extends State<TablePage2> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(0.0),
+        padding: const EdgeInsets.all(0.0),
         child: Container(
           width: 50,
           height: 60,

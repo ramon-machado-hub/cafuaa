@@ -1,19 +1,36 @@
-import 'package:flutter/material.dart';
-
 class CardModel {
-  final String characters;
-  final int indice;
-  final String naipe;
-  final Color color;
-  final int tpBaralho;
-  final int pontosCard;
+  String? characters;
+  int? indice;
+  String? naipe;
+  String? color;
+  int? tpBaralho;
+  int? pontosCard;
 
-  CardModel({
-    required this.characters,
-    required this.indice,
-    required this.naipe,
-    required this.color,
-    required this.tpBaralho,
-    required this.pontosCard,
-  });
+  CardModel(
+      {this.characters,
+        this.indice,
+        this.naipe,
+        this.color,
+        this.tpBaralho,
+        this.pontosCard});
+
+  CardModel.fromJson(Map<String, dynamic> json) {
+    characters = json['characters'];
+    indice = json['indice'];
+    naipe = json['naipe'];
+    color = json['color'];
+    tpBaralho = json['tpBaralho'];
+    pontosCard = json['pontosCard'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['characters'] = this.characters;
+    data['indice'] = this.indice;
+    data['naipe'] = this.naipe;
+    data['color'] = this.color;
+    data['tpBaralho'] = this.tpBaralho;
+    data['pontosCard'] = this.pontosCard;
+    return data;
+  }
 }
