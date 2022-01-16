@@ -8,6 +8,7 @@ import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/card/card.dart';
 import 'package:cafua/widgets/cardback/card_back.dart';
+import 'package:cafua/widgets/listcardsplayer/list_cards_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,9 +22,11 @@ class GameTwoPlayers extends StatefulWidget {
 
 class _GameTwoPlayersState extends State<GameTwoPlayers> {
   int contCardLixo = 59;
+  int contCardsPlayerOne = 11;
+  int contCardsPlayertwo = 11;
+
   late List<Cards> items;
 
-  //get cards => CardsData;
 
   @override
   Widget build(BuildContext context) {
@@ -277,31 +280,43 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
             ),
 
             //cartas jogador 15% heigth
-           /* Positioned(
-                bottom: 0,
-                left: 0,
-                child: ListView.builder(
-
-                  itemCount: cards.length,
-                  itemBuilder: (ctx, i) {
-                    return Cards(
-                      color: cards
-                          .elementAt(i)
-                          .color,
-                      width: size.width * 0.15,
-                      height: size.height * 0.15,
-                      naipe: cards
-                          .elementAt(i)
-                          .naipe+".png",
-                      number: cards
-                          .elementAt(i)
-                          .character,
-                    );
-                  }
-
-                )
-            ),*/
             Positioned(
+              bottom: 0,
+              left: 0,
+              child: SizedBox(
+                height: size.height * 0.12,
+                width: size.width,
+                child:  ListCardsPlayer(
+
+                  contCards: contCardsPlayerOne,
+                  height: size.height * 0.12 ,
+                  width: size.width * 0.1,
+                ),
+
+                /*ListView.builder(
+                    scrollDirection: Axis.horizontal,
+
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: contCardsPlayertwo,/* == null ? 0 : items.length,*/
+                    itemBuilder: (context, index) {
+                      return Align(
+                        alignment: Alignment.topCenter,
+                        widthFactor: index == 0 ? 1 : widthFactor,
+                        child: Cards(
+                            selected: false,
+                            color: (items[index].color == "red")
+                                ? AppColors.red
+                                : AppColors.black,
+                            width: size.width,
+                            height: size.height * 0.12,
+                            naipe: items[index].naipe.toString(),
+                            number: items[index].characters.toString()),
+                      );
+                    }),*/
+
+              ),
+            ),
+            /*Positioned(
               bottom: 0,
               child: Container(
                 height: size.height * 0.15,
@@ -344,7 +359,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
                   ],
                 ),
               ),
-            ),
+            ),*/
 
             //anuncio admob
             Positioned(

@@ -1,17 +1,18 @@
 import 'package:cafua/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class Cards extends StatefulWidget {
+class Cards2 extends StatefulWidget {
+  final int numerator;
   final double width;
   final double height;
   final String naipe;
-  //final String characters;
   final String number;
   final Color color;
   final bool selected;
 
-  const Cards({
+  const Cards2({
     Key? key,
+    required this.numerator,
     required this.color,
     required this.width,
     required this.height,
@@ -21,10 +22,10 @@ class Cards extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<Cards> createState() => _CardsState();
+  State<Cards2> createState() => _Cards2State();
 }
 
-class _CardsState extends State<Cards> {
+class _Cards2State extends State<Cards2> {
 
   var _selected = false;
 

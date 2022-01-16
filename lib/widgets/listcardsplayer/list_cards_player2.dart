@@ -8,17 +8,18 @@ import 'package:cafua/widgets/card/card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ListCardsPlayer extends StatefulWidget {
+class ListCardsPlayer2 extends StatefulWidget {
   final int contCards;
   final double height;
   final double width;
-  const ListCardsPlayer({Key? key,required this.height,required this.width,required this.contCards}) : super(key: key);
+  final VoidCallback onPressed;
+  const ListCardsPlayer2({Key? key,required this.height,required this.width,required this.contCards, required this.onPressed}) : super(key: key);
 
   @override
-  _ListCardsPlayerState createState() => _ListCardsPlayerState();
+  _ListCardsPlayer2State createState() => _ListCardsPlayer2State();
 }
 
-class _ListCardsPlayerState extends State<ListCardsPlayer> {
+class _ListCardsPlayer2State extends State<ListCardsPlayer2> {
 
   @override
   Widget build(BuildContext context) {
