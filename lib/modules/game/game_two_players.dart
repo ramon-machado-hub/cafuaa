@@ -224,7 +224,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
               ),
             ),
 
-            //container cartas do jogador 24%
+            //container jogos do player one 24%
             Positioned(
               bottom: size.height * 0.2,
               left: size.width * 0.05 / 2,
