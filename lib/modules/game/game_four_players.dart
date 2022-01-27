@@ -1,18 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:cafua/data/cards_data.dart';
-import 'package:cafua/models/card_model.dart';
 import 'package:cafua/models/card_model2.dart';
-import 'package:cafua/models/user_model.dart';
+import 'package:cafua/models/game_cards_model.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/card/card.dart';
 import 'package:cafua/widgets/card/card2.dart';
 import 'package:cafua/widgets/cardback/card_back.dart';
-import 'package:cafua/widgets/listcardsplayer/list_cards_player.dart';
-import 'package:cafua/widgets/listcardsplayer/list_cards_player2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,6 +21,11 @@ class GameFourPlayers extends StatefulWidget {
 
 class _GameFourPlayersState extends State<GameFourPlayers> {
   bool isSelected = false;
+  bool isMyTurn = true;
+  bool discard = false;
+  String message = "mensagem";
+  double opacity = 0;
+  List<GameCardsModel> games = [];
   List<Cards2> selectedCards = [];
   List<Cards2> cardsOne = [];
   List<Cards2> cardsTwo = [];
@@ -32,34 +33,19 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   List<Cards2> deathTwo = [];
   List<Cards2> trash = [];
   List<Cards2> bunch = [];
+
+  //barallho
   List<CardModel2> cheap = [];
   double widthFactor = 1;
   double widthFactor2 = 1;
-
-  void embaralhar(List<CardModel> cards, Size size) {
-    var random = Random();
-    List<int> list2 = [];
-    var list = List.generate(108, (index) {
-      int verificador = random.nextInt(108);
-      while (list2.contains(verificador)) {
-        verificador = random.nextInt(108);
-      }
-      list2.add(verificador);
-      return verificador;
-    });
-    print(list.toString());
-    print(list2.toString());
-  }
 
   /*
     primeiro é gerado um vetor randomico que enfatiza as cartas embaralhadas
     em seguida dar as cartas player one, player two, morto1 e morto2
     em seguida dar as cartas do fusso;
     em seguida dar as cartas do lixo;
-
    */
   void darAsCartas(List<CardModel2> cards, Size size) {
-    //embaralhar(cards, size);
     var random = Random();
     List<int> list2 = [];
     //criado uma lista de indices randomicos referentes aos indices das cartas do baralho
@@ -71,9 +57,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
       list2.add(verificador);
       return verificador;
     });
+
     //dar as cartas
     for (int i = 0; i < 44; i++) {
-      print("i = " + i.toString());
       cardsOne.add(Cards2(
         numerator: cards[list[i]].numerator,
         selected: false,
@@ -87,7 +73,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         numerator: cards[list[i + 1]].numerator,
         selected: false,
         color:
-        cards[list[i + 1]].color == "red" ? AppColors.red : AppColors.black,
+            cards[list[i + 1]].color == "red" ? AppColors.red : AppColors.black,
         height: size.height * 0.12,
         width: size.width,
         naipe: cards[list[i + 1]].naipe.toString(),
@@ -97,7 +83,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         numerator: cards[list[i + 2]].numerator,
         selected: false,
         color:
-        cards[list[i + 2]].color == "red" ? AppColors.red : AppColors.black,
+            cards[list[i + 2]].color == "red" ? AppColors.red : AppColors.black,
         height: size.height * 0.12,
         width: size.width,
         naipe: cards[list[i + 2]].naipe.toString(),
@@ -107,7 +93,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         numerator: cards[list[i + 3]].numerator,
         selected: false,
         color:
-        cards[list[i + 3]].color == "red" ? AppColors.red : AppColors.black,
+            cards[list[i + 3]].color == "red" ? AppColors.red : AppColors.black,
         height: size.height * 0.12,
         width: size.width,
         naipe: cards[list[i + 3]].naipe.toString(),
@@ -115,6 +101,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
       ));
       i = i + 3;
     }
+    //carta do lixo
     trash.add(Cards2(
       numerator: cards[list[44]].numerator,
       selected: false,
@@ -124,6 +111,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
       naipe: cards[list[44]].naipe.toString(),
       number: cards[list[44]].characters.toString(),
     ));
+
+    //cartas do morto
     for (int i = 45; i < 108; i++) {
       bunch.add(Cards2(
         numerator: cards[list[i]].numerator,
@@ -135,10 +124,11 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i]].characters.toString(),
       ));
     }
+    //ordena cartas do player
     orderCards();
   }
 
-  void orderCards(){
+  void orderCards() {
     cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
   }
 
@@ -151,21 +141,23 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   }
 
   void snoop(int player) {
+    selectedCards.add(bunch[bunch.length - 1]);
+    print("fuçou = selected = " + selectedCards.length.toString());
+    print(bunch[bunch.length - 1].selected);
+    bunch[bunch.length - 1].selected = true;
     cardsOne.add(Cards2(
-        numerator: bunch[bunch.length-1].numerator,
-        color: bunch[bunch.length-1].color,
-        width: bunch[bunch.length-1].width,
-        height: bunch[bunch.length-1].height,
-        naipe: bunch[bunch.length-1].naipe,
-        number: bunch[bunch.length-1].number,
-        selected: true));
-    bunch.remove(bunch[bunch.length-1]);
+        numerator: bunch[bunch.length - 1].numerator,
+        color: bunch[bunch.length - 1].color,
+        width: bunch[bunch.length - 1].width,
+        height: bunch[bunch.length - 1].height,
+        naipe: bunch[bunch.length - 1].naipe,
+        number: bunch[bunch.length - 1].number,
+        selected: bunch[bunch.length - 1].selected));
+    bunch.remove(bunch[bunch.length - 1]);
     orderCards();
   }
 
-
-
-  void takeTrash(){
+  void takeTrash() {
     cardsOne.addAll(trash);
     trash.clear();
     orderCards();
@@ -179,9 +171,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     double width = size.width * 0.1;
     return FutureBuilder(
         future: ReadJsonData(),
@@ -190,26 +180,18 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
             return Center(child: Text("${data.error}"));
           } else if (data.hasData) {
             var items = data.data as List<CardModel2>;
-            if (cardsOne.length == 0) {
+            if (cardsOne.isEmpty) {
               darAsCartas(items, size);
             }
             if (cardsOne.length > 10) {
-              print("ENTROU" + widthFactor.toString());
               widthFactor =
-              ((((width / 10) * 9) / (cardsOne.length - 1)) / (width / 10));
-              // widthFactor = ( (  ((widget.width / 10)*9) / (widget.contCards-1) ) /(widget.width / 10));
-              print("SAIU" + widthFactor.toString());
+                  ((((width / 10) * 9) / (cardsOne.length - 1)) / (width / 10));
             }
             if (cardsTwo.length > 6) {
-              print("ENTROU 2 ===" + widthFactor2.toString());
               widthFactor2 =
-              ((((width * 0.7 / 6) * 5) / (cardsTwo.length - 1)) /
-                  (width * 0.7 / 6));
-              // widthFactor = ( (  ((widget.width / 10)*9) / (widget.contCards-1) ) /(widget.width / 10));
-              print("SAIU 2 ===" + widthFactor2.toString());
+                  ((((width * 0.7 / 6) * 5) / (cardsTwo.length - 1)) /
+                      (width * 0.7 / 6));
             }
-            print("cards one: " + cardsOne.length.toString());
-            print("cards two: " + cardsTwo.length.toString());
             return SafeArea(
               child: Scaffold(
                 body: Container(
@@ -273,9 +255,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                 ),
                               ),
                               const Positioned(
-                                  bottom: 0,
-                                  right: 3,
-                                  child: Text("ELES")),
+                                  bottom: 0, right: 3, child: Text("ELES")),
                             ],
                           ),
                         ),
@@ -288,7 +268,12 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              snoop(1);
+                              if ((isMyTurn) && (discard == false)) {
+                                snoop(1);
+                                discard = true;
+                              } else {
+                                //speak contendo aviso "não é sua vez;
+                              }
                             });
                           },
                           child: CardBack(
@@ -297,6 +282,17 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                           ),
                         ),
                       ),
+                      /*
+                      animated
+                      Positioned(
+                        left: size.width*0.05,
+                        bottom:  size.height*0.54,
+                        child: AnimatedOpacity(
+                          child: Image.asset(AppImages.heart),
+                          duration: const Duration(seconds: 10),
+                          opacity: opacity,
+                        ),
+                      ),*/
 
                       //container do lixo 14%
                       Positioned(
@@ -304,8 +300,61 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                         left: size.width * 0.2,
                         child: GestureDetector(
                           onTap: () {
+                            print("isMyturn == " + isMyTurn.toString());
+                            print("discard == " + discard.toString());
                             setState(() {
-                              takeTrash();
+                              if (isMyTurn) {
+                                if (discard) {
+                                  print("pegou lixo ----------------------");
+                                  takeTrash();
+                                  discard = true;
+                                }
+                                print("isMyturn == " + isMyTurn.toString());
+                                print("discard == " + discard.toString());
+                              } else {
+                                print("selectedCards === " +
+                                    selectedCards.length.toString());
+                                if ((isMyTurn) && (discard == true)) {
+                                  //minha vez descarte, apenas uma carta deve ser selecionada
+                                  if (selectedCards.length == 1) {
+                                    trash.add(selectedCards[0]);
+                                    cardsOne.remove(selectedCards[0]);
+                                    selectedCards.clear();
+                                    isMyTurn = false;
+                                    opacity = 0;
+                                    discard = false;
+                                  } else {
+                                    // trash.add(selectedCards)
+                                    print("mensagens");
+                                    if (isMyTurn = false) {
+                                      message = "Aguarde sua vez.";
+                                    } else {
+                                      if (selectedCards.length > 1) {
+                                        message = "Selecione apenas uma carta.";
+                                      } else {
+                                        if (selectedCards.isEmpty) {
+                                          message =
+                                              "Selecione uma carta para descartar.";
+                                        }
+                                      }
+                                    }
+                                    var snackbar = SnackBar(
+                                      content: Text(message),
+                                      duration: const Duration(seconds: 2),
+                                      margin: const EdgeInsets.fromLTRB(
+                                          20, 20, 20, 40),
+                                      behavior: SnackBarBehavior.floating,
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackbar);
+                                    //Scaffold.of(context).showSnackBar(snackbar);
+                                    //SÓ É POSSÍVEL DISCARTAR UMA CARTA
+                                    //SELECIONE UMA CARTA PARA DESCARTÁ-LA.
+                                  }
+                                } else {
+                                  //aviso não é a sua vez
+                                }
+                              }
                             });
                           },
                           child: Container(
@@ -320,30 +369,27 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                     width: 1,
                                   ),
                                 )),
-                            child: trash.isNotEmpty ?
-                              ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: trash.length,
-                                itemBuilder: (context, index) {
-                                  return Align(
-                                    alignment: Alignment.bottomCenter,
-                                    widthFactor: 1,
-                                    child: Cards2(
-                                      selected: trash[index].selected,
-                                      color: (trash[index].color == "red")
-                                          ? AppColors.red
-                                          : AppColors.black,
-                                      width: size.height * 0.075,
-                                      height: size.height * 0.14,
-                                      naipe: trash[index].naipe.toString(),
-                                      number: trash[index].number.toString(),
-                                      numerator: trash[index].numerator,
-                                    ),
-                                  );
-                                })
-                                :
-                                Center(child: const Text("DESCARTE UMA CARTA AQUI")),
+                            child: trash.isNotEmpty
+                                ? ListView.builder(
+                                    itemCount: trash.length,
+                                    itemBuilder: (context, index) {
+                                    return Align(
+                                      alignment: Alignment.bottomCenter,
+                                      widthFactor: 1,
+                                      child: Cards2(
+                                        selected: trash[index].selected,
+                                        color: trash[index].color,
+                                        width: size.height * 0.075,
+                                        height: size.height * 0.14,
+                                        naipe: trash[index].naipe.toString(),
+                                        number: trash[index].number.toString(),
+                                        numerator: trash[index].numerator,
+                                      ),
+                                    );
+                                  })
+                                : Center(
+                                    child:
+                                        const Text("DESCARTE UMA CARTA AQUI")),
                           ),
                         ),
                       ),
@@ -374,37 +420,101 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                       Positioned(
                         bottom: size.height * 0.15,
                         left: size.width * 0.05 / 2,
-                        child: Container(
-                          height: size.height * 0.24,
-                          width: size.width * 0.95,
-                          decoration: BoxDecoration(
-                              color: AppColors.stroke,
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.fromBorderSide(
-                                BorderSide(
-                                  color: AppColors.cafua,
-                                  width: 1,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (isMyTurn) {
+                                if (discard){
+                                  //arriar cartas selecionadas
+
+                                } else{
+                                  //aviso "VC DEVE FUÇAR OU PEGAR O LIXO."
+
+                                }
+
+                              } else {
+                                //aviso  "AINDA não é sua vez;
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: size.height * 0.24,
+                            width: size.width * 0.95,
+                            decoration: BoxDecoration(
+                                color: AppColors.stroke,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.cafua,
+                                    width: 1,
+                                  ),
+                                )),
+                            child: games.isNotEmpty
+                                ? Wrap(
+                                    children: [
+                                      for (int i=0; i < games.length; i++)
+                                        ListView.builder(
+                                            itemCount: games[i].cards.length,
+                                            itemBuilder: (context, index) {
+                                              return Align(
+                                                  alignment: Alignment.bottomCenter,
+                                                  widthFactor: 1,
+                                                  child: Cards2(
+                                                  selected: games[i].cards[index].selected,
+                                                  color: (games[i].cards[index].color == "red")
+                                                  ? AppColors.red
+                                                  : AppColors.black,
+                                                  width: size.height * 0.075,
+                                                  height: size.height * 0.14,
+                                                  naipe: games[i].cards[index].naipe.toString(),
+                                                  number: games[i].cards[index].number.toString(),
+                                                  numerator: games[i].cards[index].numerator,
+                                              ),);
+                                            }),
+                                    ],
+                                  )
+                                /*ListView.builder(
+                                  itemCount: games.length,
+                                  itemBuilder: (context, index) {
+                                return Align(
+                                  alignment: Alignment.bottomCenter,
+                                  widthFactor: 1,
+                                  child: Cards2(
+                                    selected: trash[index].selected,
+                                    color: (trash[index].color == "red")
+                                        ? AppColors.red
+                                        : AppColors.black,
+                                    width: size.height * 0.075,
+                                    height: size.height * 0.14,
+                                    naipe: trash[index].naipe.toString(),
+                                    number: trash[index].number.toString(),
+                                    numerator: trash[index].numerator,
+                                  ),
+                                );
+                              })*/
+                                : const Center(
+                                    child: Text("INSIRA SEUS JOGOS AQUI")),
+
+                            /*Stack(
+                              children: [
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Cards(
+                                    selected: false,
+                                    width: size.width / 10,
+                                    height: size.height / 10,
+                                    color: AppColors.red,
+                                    number: '4',
+                                    naipe: AppImages.heart,
+                                  ),
                                 ),
-                              )),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 0,
-                                left: 0,
-                                child: Cards(
-                                  selected: false,
-                                  width: size.width / 10,
-                                  height: size.height / 10,
-                                  color: AppColors.red,
-                                  number: '4',
-                                  naipe: AppImages.heart,
-                                ),
-                              ),
-                              const Positioned(
-                                  bottom: 0,
-                                  right: 3,
-                                  child: Text("NÓS")),
-                            ],
+                                const Positioned(
+                                    bottom: 0,
+                                    right: 3,
+                                    child: Text("NÓS")),
+                              ],
+                            ),*/
                           ),
                         ),
                       ),
@@ -427,9 +537,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                               )),
                           child: Center(
                               child: Text(
-                                'Nós: 0',
-                                style: TextStyles.subTitleGameCard,
-                              )),
+                            'Nós: 0',
+                            style: TextStyles.subTitleGameCard,
+                          )),
                         ),
                       ),
 
@@ -472,9 +582,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                               )),
                           child: Center(
                               child: Text(
-                                'Eles: 0',
-                                style: TextStyles.subTitleGameCard,
-                              )),
+                            'Eles: 0',
+                            style: TextStyles.subTitleGameCard,
+                          )),
                         ),
                       ),
 
@@ -490,18 +600,88 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                 scrollDirection: Axis.horizontal,
                                 itemCount: cardsOne.length,
                                 itemBuilder: (context, index) {
-                                  print("cards" +
-                                      cardsOne.length.toString() +
-                                      " widthFactor" +
-                                      widthFactor.toString());
                                   return Align(
                                     alignment: Alignment.bottomCenter,
                                     widthFactor: index == 0 ? 1 : widthFactor,
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          cardsOne[index].selected =
-                                          !cardsOne[index].selected;
+                                          int indiceRemove = 100;
+                                          print("carta selected = " +
+                                              cardsOne[index]
+                                                  .selected
+                                                  .toString());
+                                          if (cardsOne[index].selected ==
+                                              true) {
+                                            /*print("index = "+index.toString()+" validacao in cardsOne[index].selected = "+cardsOne[index].selected.toString());
+                                            print("tamanho selectedCards = "+selectedCards.length.toString());
+                                            print("selectedCard isEmpity"+selectedCards.isEmpty.toString());
+                                            print("item removido "+selectedCards[0].selected.toString());
+                                            print("item selecionado "+cardsOne[index].selected.toString());
+                                            print("item removido "+selectedCards[0].numerator.toString());
+                                            print("item selecionado "+cardsOne[index].numerator.toString());
+                                            print("contem "+selectedCards.contains(cardsOne[index]).toString());
+
+                                             */
+                                            //encontra indice a ser removido
+                                            for (int i = 0;
+                                                i < selectedCards.length;
+                                                i++) {
+                                              if (selectedCards[i].numerator ==
+                                                  cardsOne[index].numerator) {
+                                                print("encontrou");
+                                                indiceRemove = i;
+                                                break;
+                                              }
+                                            }
+                                            print("selected cardsOne");
+                                            print("numerator " +
+                                                selectedCards[0]
+                                                    .numerator
+                                                    .toString());
+                                            print("naipe " +
+                                                selectedCards[0]
+                                                    .naipe
+                                                    .toString());
+                                            print("selected " +
+                                                selectedCards[0]
+                                                    .selected
+                                                    .toString());
+                                            print("number " +
+                                                selectedCards[0]
+                                                    .number
+                                                    .toString());
+                                            print("SelectedCards");
+                                            print("numerator " +
+                                                cardsOne[index]
+                                                    .numerator
+                                                    .toString());
+                                            print("naipe " +
+                                                cardsOne[index]
+                                                    .naipe
+                                                    .toString());
+                                            print("selected " +
+                                                cardsOne[index]
+                                                    .selected
+                                                    .toString());
+                                            print("number " +
+                                                cardsOne[index]
+                                                    .number
+                                                    .toString());
+                                            //print("contem "+selectedCards.contains(cardsOne[index]).toString());
+                                            selectedCards
+                                                .removeAt(indiceRemove);
+                                            cardsOne[index].selected = false;
+                                            print(
+                                                "validacao out selectedCards = " +
+                                                    selectedCards.length
+                                                        .toString());
+                                          } else {
+                                            selectedCards.add(cardsOne[index]);
+                                            cardsOne[index].selected = true;
+                                          }
+                                          print("selectedCards === " +
+                                              selectedCards.length.toString());
                                         });
                                       },
                                       child: Cards2(
@@ -513,7 +693,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                         height: size.height * 0.1,
                                         naipe: cardsOne[index].naipe.toString(),
                                         number:
-                                        cardsOne[index].number.toString(),
+                                            cardsOne[index].number.toString(),
                                         numerator: cardsOne[index].numerator,
                                       ),
                                     ),
@@ -554,9 +734,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                           width: size.width,
                           child: Center(
                               child: Text(
-                                'ANUNCIO ADMOB',
-                                style: TextStyles.titleBoldBackground,
-                              )),
+                            'ANUNCIO ADMOB',
+                            style: TextStyles.titleBoldBackground,
+                          )),
                         ),
                       ),
                     ],
@@ -570,6 +750,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
             );
           }
         } //aqui
-    );
+        );
   }
 }
