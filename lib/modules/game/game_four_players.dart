@@ -25,6 +25,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   bool discard = false;
   String message = "mensagem";
   double opacity = 0;
+  late SnackBar snack;
   List<GameCardsModel> games = [];
   List<Cards2> selectedCards = [];
   List<Cards2> cardsOne = [];
@@ -128,11 +129,22 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     orderCards();
   }
 
+  void editSnackBar(String message){
+    snack = SnackBar(
+      backgroundColor: AppColors.primary,
+      content: Text(message, style: TextStyles.subTitleGameCard, textAlign: TextAlign.center,),
+      duration: const Duration(seconds: 4),
+      margin: const EdgeInsets.fromLTRB(
+          20, 20, 20, 40),
+      behavior: SnackBarBehavior.floating,
+    );
+  }
+
   void orderCards() {
     cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
   }
 
-  void selectedCard(Cards2 card) {
+  void SelectedCard(Cards2 card) {
     if (selectedCards.contains(card)) {
       selectedCards.remove(card);
     } else {
@@ -157,7 +169,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     orderCards();
   }
 
-  void takeTrash() {
+  void TakeTrash() {
     cardsOne.addAll(trash);
     trash.clear();
     orderCards();
@@ -228,35 +240,42 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                       Positioned(
                         bottom: size.height * 0.54,
                         left: size.width * 0.05 / 2,
-                        child: Container(
-                          height: size.height * 0.24,
-                          width: size.width * 0.95,
-                          decoration: BoxDecoration(
-                              color: AppColors.stroke,
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.fromBorderSide(
-                                BorderSide(
-                                  color: AppColors.cafua,
-                                  width: 1,
+                        child: GestureDetector(
+                          onTap: (){
+                            editSnackBar("Ops! Aqui fica os jogos do adversário.");
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snack);
+                          },
+                          child: Container(
+                            height: size.height * 0.24,
+                            width: size.width * 0.95,
+                            decoration: BoxDecoration(
+                                color: AppColors.stroke,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.cafua,
+                                    width: 1,
+                                  ),
+                                )),
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Cards(
+                                    selected: false,
+                                    width: size.width / 10,
+                                    height: size.height / 10,
+                                    color: AppColors.cafua,
+                                    number: '3',
+                                    naipe: AppImages.spade,
+                                  ),
                                 ),
-                              )),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 0,
-                                left: 0,
-                                child: Cards(
-                                  selected: false,
-                                  width: size.width / 10,
-                                  height: size.height / 10,
-                                  color: AppColors.cafua,
-                                  number: '3',
-                                  naipe: AppImages.spade,
-                                ),
-                              ),
-                              const Positioned(
-                                  bottom: 0, right: 3, child: Text("ELES")),
-                            ],
+                                const Positioned(
+                                    bottom: 0, right: 3, child: Text("ELES")),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -268,11 +287,23 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              if ((isMyTurn) && (discard == false)) {
-                                snoop(1);
-                                discard = true;
+                              if ((isMyTurn) ) {
+                                if (discard==false){
+                                  //entra quando é a minha vez eesta bloqueado para descarte (false)
+                                  snoop(1);//fuçou
+                                  discard = true;//descarte está liberado
+                                } else {
+                                  //speak contendo aviso "Você já fuçou"
+                                  print("speak contendo aviso Você já fuçou");
+                                  editSnackBar("Você já fuçou.");
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
+                                }
                               } else {
-                                //speak contendo aviso "não é sua vez;
+                                //speak contendo aviso "Aguarde sua vez;
+                                editSnackBar("Aguarde sua vez.");
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snack);
                               }
                             });
                           },
@@ -305,16 +336,44 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                             setState(() {
                               if (isMyTurn) {
                                 if (discard) {
+                                  //descartou uma carta selecionada
+                                  if (selectedCards.length==1){
+                                    cardsOne.remove(selectedCards[selectedCards.length-1]);
+                                    selectedCards[selectedCards.length-1].selected=false;
+                                    if (trash.isEmpty) {
+                                      trash.addAll(selectedCards);
+                                    } else {
+                                      trash.add(selectedCards[0]);
+                                    }
+                                    selectedCards.clear();
+                                    discard = false;
+                                  }else{
+                                    //Aviso "Selecionar uma carta para discarte"
+                                    editSnackBar("Selecione uma carta para descarte.");
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snack);
+                                    print("saiu no aviso");
+                                  }
+                                } else {
                                   print("pegou lixo ----------------------");
-                                  takeTrash();
+                                  TakeTrash();
                                   discard = true;
                                 }
                                 print("isMyturn == " + isMyTurn.toString());
                                 print("discard == " + discard.toString());
                               } else {
+                                print("NÃO É A SUA VEZ");
+
+                                /*
+                                //Aviso "não é a sua vez"
                                 print("selectedCards === " +
                                     selectedCards.length.toString());
-                                if ((isMyTurn) && (discard == true)) {
+                                if ((isMyTurn) ) {
+                                  if (discard){
+                                    //pegou lixo
+                                  } else{
+
+                                  }
                                   //minha vez descarte, apenas uma carta deve ser selecionada
                                   if (selectedCards.length == 1) {
                                     trash.add(selectedCards[0]);
@@ -353,7 +412,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                   }
                                 } else {
                                   //aviso não é a sua vez
-                                }
+                                }*/
                               }
                             });
                           },
@@ -387,9 +446,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                       ),
                                     );
                                   })
-                                : Center(
+                                : const Center(
                                     child:
-                                        const Text("DESCARTE UMA CARTA AQUI")),
+                                        Text("DESCARTE UMA CARTA AQUI")),
                           ),
                         ),
                       ),
@@ -423,55 +482,75 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
+                              print("discarte ismyturn = "+isMyTurn.toString());
+                              print("discarte discard = "+discard.toString());
                               if (isMyTurn) {
                                 if (discard){
                                   //arriar cartas selecionadas
+                                  if (selectedCards.length<3){
+                                    //snack "SELECIONE AO MENOS 3 CARTAS
+                                    editSnackBar("Selecione ao menos 3 cartas para descer um jogo.");
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snack);
+                                  } else {
+                                    //adicionando cartas selecionadas array de Games.
+                                      games.add(GameCardsModel(cards:selectedCards));
+                                      for (int i =0; i<cardsOne.length; i++){
+                                        for (int j =0; j<selectedCards.length; j++) {
+                                          if (cardsOne[i].numerator ==
+                                              selectedCards[j].numerator)
+                                            cardsOne.removeAt(i);
+                                        }
+                                      }
+                                      selectedCards.clear();
+                                      //games.addAll(selectedCards);
+                                  }
 
                                 } else{
                                   //aviso "VC DEVE FUÇAR OU PEGAR O LIXO."
-
+                                  editSnackBar("Pegar carta do monte ou Pegar lixo.");
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
                                 }
 
                               } else {
                                 //aviso  "AINDA não é sua vez;
+                                editSnackBar("Aguarde sua vez.");
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snack);
                               }
                             });
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: size.height * 0.24,
                             width: size.width * 0.95,
-                            decoration: BoxDecoration(
-                                color: AppColors.stroke,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.fromBorderSide(
-                                  BorderSide(
-                                    color: AppColors.cafua,
-                                    width: 1,
-                                  ),
-                                )),
+
                             child: games.isNotEmpty
-                                ? Wrap(
-                                    children: [
-                                      for (int i=0; i < games.length; i++)
-                                        ListView.builder(
-                                            itemCount: games[i].cards.length,
-                                            itemBuilder: (context, index) {
-                                              return Align(
-                                                  alignment: Alignment.bottomCenter,
-                                                  widthFactor: 1,
-                                                  child: Cards2(
-                                                  selected: games[i].cards[index].selected,
-                                                  color: (games[i].cards[index].color == "red")
-                                                  ? AppColors.red
-                                                  : AppColors.black,
-                                                  width: size.height * 0.075,
-                                                  height: size.height * 0.14,
-                                                  naipe: games[i].cards[index].naipe.toString(),
-                                                  number: games[i].cards[index].number.toString(),
-                                                  numerator: games[i].cards[index].numerator,
+                                ?
+                                  ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    itemBuilder: (context, index1) {
+                                      return ListView.builder(
+                                          itemCount: games[index1].cards.length,
+                                          itemBuilder: (context, index2) {
+                                            print("tesssssssssssste"+games[index1].cards[index2].numerator.toString());
+                                            return Align(
+                                              alignment: Alignment.bottomCenter,
+                                              widthFactor: 1,
+                                              child: Cards2(
+                                                selected: games[index1].cards[index2].selected,
+                                                color: (games[index1].cards[index2].color == "red")
+                                                    ? AppColors.red
+                                                    : AppColors.black,
+                                                width: size.height * 0.075,
+                                                height: size.height * 0.14,
+                                                naipe: games[index1].cards[index2].naipe.toString(),
+                                                number: games[index1].cards[index2].number.toString(),
+                                                numerator: games[index1].cards[index2].numerator,
                                               ),);
-                                            }),
-                                    ],
+                                          });
+                                    },
+
                                   )
                                 /*ListView.builder(
                                   itemCount: games.length,
