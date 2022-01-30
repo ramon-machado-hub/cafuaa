@@ -27,6 +27,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   double opacity = 0;
   late SnackBar snack;
   List<GameCardsModel> games = [];
+  List<List<Cards2>> gamesOne = [];
   List<Cards2> selectedCards = [];
   List<Cards2> cardsOne = [];
   List<Cards2> cardsTwo = [];
@@ -129,6 +130,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     orderCards();
   }
 
+  //mensagem de avisos
   void editSnackBar(String message){
     snack = SnackBar(
       backgroundColor: AppColors.primary,
@@ -140,6 +142,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     );
   }
 
+  //ordenar cartas player one
   void orderCards() {
     cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
   }
@@ -152,6 +155,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     }
   }
 
+  //fuçar
   void snoop(int player) {
     selectedCards.add(bunch[bunch.length - 1]);
     print("fuçou = selected = " + selectedCards.length.toString());
@@ -169,12 +173,26 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     orderCards();
   }
 
+  //pegar lixo
   void TakeTrash() {
     cardsOne.addAll(trash);
     trash.clear();
     orderCards();
   }
 
+  //jogada adversário
+  void jogadaAdversario()  {
+      cardsTwo.add(bunch.last);
+      bunch.removeLast();
+      cardsTwo.sort((a, b) => a.numerator.compareTo(b.numerator));
+      trash.add(cardsTwo.first);
+      cardsTwo.removeAt(0);
+      setState(() {
+        isMyTurn = true;
+      });
+  }
+
+  //carregando cartas do json
   Future<List<CardModel2>> ReadJsonData() async {
     final jsondata = await rootBundle.loadString('jsonfile/cards_json.json');
     final list = json.decode(jsondata) as List<dynamic>;
@@ -210,31 +228,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                   color: AppColors.grey,
                   child: Stack(
                     children: [
-                      //imagem jogador 2 adversário
-                      Positioned(
-                        bottom: size.height * 0.785,
-                        left: size.width * 0.05,
-                        height: size.width * 0.25,
-                        width: size.width * 0.25,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: AppColors.heading,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.fromBorderSide(
-                                  BorderSide(
-                                    color: AppColors.blue,
-                                    width: 3,
-                                  ),
-                                )),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Icon(
-                                Icons.person_rounded,
-                                color: AppColors.stroke,
-                                //size: 36.0,
-                              ),
-                            )),
-                      ),
 
                       //container jogos dos adversários
                       Positioned(
@@ -279,6 +272,59 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                           ),
                         ),
                       ),
+
+                      //imagem player adversário
+                      AnimatedPositioned(
+                        duration: Duration(seconds: 1),
+                        bottom: isMyTurn ? size.height * 0.785 :  size.height * 0.785-size.width * 0.125,
+                        left: size.width * 0.05,
+                        height: size.width * 0.25,
+                        width: size.width * 0.25,
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.heading,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.blue,
+                                    width: 3,
+                                  ),
+                                )),
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Icon(
+                                Icons.person_rounded,
+                                color: AppColors.stroke,
+                                //size: 36.0,
+                              ),
+                            )),
+                      ),
+
+                      //imagem jogador 2 adversário
+                     /* Positioned(
+                        bottom: size.height * 0.785,
+                        left: size.width * 0.05,
+                        height: size.width * 0.25,
+                        width: size.width * 0.25,
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.heading,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.blue,
+                                    width: 3,
+                                  ),
+                                )),
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Icon(
+                                Icons.person_rounded,
+                                color: AppColors.stroke,
+                                //size: 36.0,
+                              ),
+                            )),
+                      ),*/
 
                       //fuço
                       Positioned(
@@ -333,12 +379,19 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                           onTap: () {
                             print("isMyturn == " + isMyTurn.toString());
                             print("discard == " + discard.toString());
-                            setState(() {
                               if (isMyTurn) {
                                 if (discard) {
                                   //descartou uma carta selecionada
                                   if (selectedCards.length==1){
-                                    cardsOne.remove(selectedCards[selectedCards.length-1]);
+                                    //remover pelo indice
+                                    for (int i =0; i<cardsOne.length; i++){
+                                        if (cardsOne[i].numerator ==
+                                            selectedCards[0].numerator) {
+                                          setState(() {
+                                            cardsOne.removeAt(i);
+                                          });
+                                        }
+                                    }
                                     selectedCards[selectedCards.length-1].selected=false;
                                     if (trash.isEmpty) {
                                       trash.addAll(selectedCards);
@@ -346,7 +399,17 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                       trash.add(selectedCards[0]);
                                     }
                                     selectedCards.clear();
+                                    setState(() {
+                                      isMyTurn = false;
+                                    });
                                     discard = false;
+                                    setState(() async {
+                                      await Future.delayed(const Duration(seconds: 2));
+                                      jogadaAdversario();
+                                    });
+                                    setState(() {
+                                      isMyTurn = true;
+                                    });
                                   }else{
                                     //Aviso "Selecionar uma carta para discarte"
                                     editSnackBar("Selecione uma carta para descarte.");
@@ -358,63 +421,15 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                   print("pegou lixo ----------------------");
                                   TakeTrash();
                                   discard = true;
+                                  setState(() {
+
+                                  });
                                 }
                                 print("isMyturn == " + isMyTurn.toString());
                                 print("discard == " + discard.toString());
                               } else {
                                 print("NÃO É A SUA VEZ");
-
-                                /*
-                                //Aviso "não é a sua vez"
-                                print("selectedCards === " +
-                                    selectedCards.length.toString());
-                                if ((isMyTurn) ) {
-                                  if (discard){
-                                    //pegou lixo
-                                  } else{
-
-                                  }
-                                  //minha vez descarte, apenas uma carta deve ser selecionada
-                                  if (selectedCards.length == 1) {
-                                    trash.add(selectedCards[0]);
-                                    cardsOne.remove(selectedCards[0]);
-                                    selectedCards.clear();
-                                    isMyTurn = false;
-                                    opacity = 0;
-                                    discard = false;
-                                  } else {
-                                    // trash.add(selectedCards)
-                                    print("mensagens");
-                                    if (isMyTurn = false) {
-                                      message = "Aguarde sua vez.";
-                                    } else {
-                                      if (selectedCards.length > 1) {
-                                        message = "Selecione apenas uma carta.";
-                                      } else {
-                                        if (selectedCards.isEmpty) {
-                                          message =
-                                              "Selecione uma carta para descartar.";
-                                        }
-                                      }
-                                    }
-                                    var snackbar = SnackBar(
-                                      content: Text(message),
-                                      duration: const Duration(seconds: 2),
-                                      margin: const EdgeInsets.fromLTRB(
-                                          20, 20, 20, 40),
-                                      behavior: SnackBarBehavior.floating,
-                                    );
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackbar);
-                                    //Scaffold.of(context).showSnackBar(snackbar);
-                                    //SÓ É POSSÍVEL DISCARTAR UMA CARTA
-                                    //SELECIONE UMA CARTA PARA DESCARTÁ-LA.
-                                  }
-                                } else {
-                                  //aviso não é a sua vez
-                                }*/
                               }
-                            });
                           },
                           child: Container(
                             height: size.height * 0.14,
@@ -430,6 +445,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                 )),
                             child: trash.isNotEmpty
                                 ? ListView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
                                     itemCount: trash.length,
                                     itemBuilder: (context, index) {
                                     return Align(
@@ -494,14 +511,25 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                         .showSnackBar(snack);
                                   } else {
                                     //adicionando cartas selecionadas array de Games.
-                                      games.add(GameCardsModel(cards:selectedCards));
+                                    gamesOne.add(selectedCards);
+                                    for (int i =0; i<selectedCards.length; i++) {
+                                      cardsOne.removeWhere((item) => item.numerator == selectedCards[i].numerator);
+                                    }
+                                    print("gamesOne[0].length"+gamesOne[0].length.toString());
+                                    print("gamesOne[0][1].numerator."+gamesOne[0][1].numerator.toString());
+                                    /*
                                       for (int i =0; i<cardsOne.length; i++){
                                         for (int j =0; j<selectedCards.length; j++) {
                                           if (cardsOne[i].numerator ==
-                                              selectedCards[j].numerator)
+                                              selectedCards[j].numerator) {
+
+                                            games.add(GameCardsModel(cards: selectedCards));
+                                            print("remove at "+i.toString());
+                                            //print("cards.lenthg at "+games[]);
                                             cardsOne.removeAt(i);
+                                          }
                                         }
-                                      }
+                                      }*/
                                       selectedCards.clear();
                                       //games.addAll(selectedCards);
                                   }
@@ -521,36 +549,78 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                               }
                             });
                           },
-                          child: SizedBox(
+                          child: Container(
                             height: size.height * 0.24,
                             width: size.width * 0.95,
-
-                            child: games.isNotEmpty
+                            decoration: BoxDecoration(
+                                color: AppColors.stroke,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.cafua,
+                                    width: 1,
+                                  ),
+                                )),
+                            child: gamesOne.isNotEmpty
                                 ?
-                                  ListView.builder(
-                                    scrollDirection: Axis.vertical,
-                                    itemBuilder: (context, index1) {
-                                      return ListView.builder(
-                                          itemCount: games[index1].cards.length,
-                                          itemBuilder: (context, index2) {
-                                            print("tesssssssssssste"+games[index1].cards[index2].numerator.toString());
-                                            return Align(
-                                              alignment: Alignment.bottomCenter,
-                                              widthFactor: 1,
-                                              child: Cards2(
-                                                selected: games[index1].cards[index2].selected,
-                                                color: (games[index1].cards[index2].color == "red")
-                                                    ? AppColors.red
-                                                    : AppColors.black,
-                                                width: size.height * 0.075,
-                                                height: size.height * 0.14,
-                                                naipe: games[index1].cards[index2].naipe.toString(),
-                                                number: games[index1].cards[index2].number.toString(),
-                                                numerator: games[index1].cards[index2].numerator,
-                                              ),);
-                                          });
-                                    },
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: size.height * 0.30,
+                                        height: size.height * 0.119,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.fromBorderSide(
+                                              BorderSide(
+                                                color: AppColors.cafua,
+                                                width: 1,
+                                              ),
+                                            )),
+                                        child: ListView.builder(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: trash.length,
+                                            itemBuilder: (context, index) {
+                                              return Align(
+                                                alignment: Alignment.bottomCenter,
+                                                widthFactor: 0.5,
+                                                child: Cards2(
+                                                  selected: gamesOne[0][index].selected,
+                                                  color: gamesOne[0][index].color,
+                                                  width: size.height * 0.075,
+                                                  height: size.height * 0.14,
+                                                  naipe: gamesOne[0][index].naipe.toString(),
+                                                  number: gamesOne[0][index].number.toString(),
+                                                  numerator: gamesOne[0][index].numerator,
+                                                ),
+                                              );
+                                            })
 
+                                        /*
+                                        ListView.builder(
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: gamesOne[0].length,
+                                                itemBuilder: (context, index) {
+                                                  print("tesssssssssssste"+gamesOne[0].length.toString());
+                                                  return Align(
+                                                    alignment: Alignment.bottomCenter,
+                                                    widthFactor: 1,
+                                                    child: Cards2(
+                                                      selected: gamesOne[0][index].selected,
+                                                      color: (gamesOne[0][index].color == "red")
+                                                          ? AppColors.red
+                                                          : AppColors.black,
+                                                      width: size.height * 0.075,
+                                                      height: size.height * 0.14,
+                                                      naipe: gamesOne[0][index].naipe.toString(),
+                                                      number: gamesOne[0][index].number.toString(),
+                                                      numerator: gamesOne[0][index].numerator,
+                                                    ),);
+                                                }),*/
+                                      ),
+                                    ],
                                   )
                                 /*ListView.builder(
                                   itemCount: games.length,
@@ -574,26 +644,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                 : const Center(
                                     child: Text("INSIRA SEUS JOGOS AQUI")),
 
-                            /*Stack(
-                              children: [
-                                Positioned(
-                                  top: 0,
-                                  left: 0,
-                                  child: Cards(
-                                    selected: false,
-                                    width: size.width / 10,
-                                    height: size.height / 10,
-                                    color: AppColors.red,
-                                    number: '4',
-                                    naipe: AppImages.heart,
-                                  ),
-                                ),
-                                const Positioned(
-                                    bottom: 0,
-                                    right: 3,
-                                    child: Text("NÓS")),
-                              ],
-                            ),*/
                           ),
                         ),
                       ),
@@ -623,9 +673,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                       ),
 
                       //imagem jogador logado
-                      Positioned(
-                        //quando for a vez do adversário alterar o top para
-                        top: size.height * 0.81,
+                      AnimatedPositioned(
+                        duration: const Duration(seconds: 1),
+                        top: isMyTurn ? size.height * 0.71 : size.height * 0.81 ,
                         left: 35,
                         height: 80,
                         width: 80,
@@ -804,6 +854,64 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                         ),
                       ),
 
+                      //qtd cartas player logado
+                      AnimatedPositioned(
+                          duration: Duration(seconds: 1),
+                          bottom: isMyTurn ? size.height * 0.23 : size.height * 0.13,
+                          left: size.width * 0.15,
+                          child: Container(
+                            width: size.width * 0.05,
+                            height: size.width * 0.05,
+                            decoration: BoxDecoration(
+                              color: AppColors.cafua.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(2),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.shape,
+                                    width: 1.5,
+                                  ),
+                                )
+                            ),
+                            child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(0.5),
+                                  child: Text(
+                                    cardsOne.length.toString(),
+                                    style: TextStyles.subTitleGameCard,
+                                  ),
+                                )),
+                          )),
+
+                      //qtd cartas adversário
+                      AnimatedPositioned(
+                          duration: Duration(seconds: 1),
+                          top: isMyTurn? size.height * 0.15: size.height*0.23,
+                          left: size.width * 0.23,
+                          child: Container(
+                            width: size.width * 0.05,
+                            height: size.width * 0.05,
+                            decoration: BoxDecoration(
+                                color: AppColors.cafua.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.shape,
+                                    width: 1.5,
+                                  ),
+                                )
+                            ),
+                            child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(0.5),
+                                  child: Text(
+                                    cardsTwo.length.toString(),
+                                    style: TextStyles.subTitleGameCard,
+                                  ),
+                                )),
+                          )),
+
                       //anuncio admob
                       Positioned(
                         top: 0,
@@ -831,4 +939,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         } //aqui
         );
   }
+
+
 }
