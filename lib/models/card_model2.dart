@@ -5,7 +5,7 @@ class CardModel2 {
   String? naipe;
   String? color;
   int? tpBaralho;
-  int? pontosCard;
+  int pontosCard=0;
 
   CardModel2(
       { required this.numerator,
@@ -14,7 +14,7 @@ class CardModel2 {
         this.naipe,
         this.color,
         this.tpBaralho,
-        this.pontosCard});
+        required this.pontosCard});
 
   CardModel2.fromJson(Map<String, dynamic> json) {
     numerator = json['number'];

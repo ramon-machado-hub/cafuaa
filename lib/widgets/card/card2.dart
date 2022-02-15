@@ -8,6 +8,7 @@ class Cards2 extends StatefulWidget {
   final String naipe;
   final String number;
   final Color color;
+  final int points;
   bool selected;
 
   Cards2({
@@ -19,6 +20,7 @@ class Cards2 extends StatefulWidget {
     required this.naipe,
     required this.number,
     required this.selected,
+    required this.points,
   }) : super(key: key);
 
   @override

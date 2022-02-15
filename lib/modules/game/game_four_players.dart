@@ -25,7 +25,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   bool discard = false;
   String message = "mensagem";
   double opacity = 0;
-  int countGame =0;
+  int points1 =0;
+  int points2 =0;
   late SnackBar snack;
   List<GameCardsModel> games = [];
   List<List<Cards2>> gamesOne = [];
@@ -64,6 +65,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     //dar as cartas
     for (int i = 0; i < 44; i++) {
       cardsOne.add(Cards2(
+        points: cards[list[i]].pontosCard,
         numerator: cards[list[i]].numerator,
         selected: false,
         color: cards[list[i]].color == "red" ? AppColors.red : AppColors.black,
@@ -73,6 +75,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i]].characters.toString(),
       ));
       cardsTwo.add(Cards2(
+        points: cards[list[i+1]].pontosCard,
         numerator: cards[list[i + 1]].numerator,
         selected: false,
         color:
@@ -83,6 +86,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i + 1]].characters.toString(),
       ));
       deathOne.add(Cards2(
+        points: cards[list[i+2]].pontosCard,
         numerator: cards[list[i + 2]].numerator,
         selected: false,
         color:
@@ -93,6 +97,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i + 2]].characters.toString(),
       ));
       deathTwo.add(Cards2(
+        points: cards[list[i+3]].pontosCard,
         numerator: cards[list[i + 3]].numerator,
         selected: false,
         color:
@@ -106,6 +111,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     }
     //carta do lixo
     trash.add(Cards2(
+      points: cards[list[44]].pontosCard,
       numerator: cards[list[44]].numerator,
       selected: false,
       color: cards[list[44]].color == "red" ? AppColors.red : AppColors.black,
@@ -118,6 +124,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     //cartas do morto
     for (int i = 45; i < 108; i++) {
       bunch.add(Cards2(
+        points: cards[list[i]].pontosCard,
         numerator: cards[list[i]].numerator,
         selected: false,
         color: cards[list[i]].color == "red" ? AppColors.red : AppColors.black,
@@ -148,6 +155,25 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
   }
 
+  //adicionando cartas gamesOne
+  void addCardsGamesOne(){
+    gamesOne.add(List<Cards2>.generate(
+        selectedCards.length,
+            (index) => selectedCards[index]));
+    for (int i =0; i<selectedCards.length; i++) {
+      cardsOne.removeWhere((item) => item.numerator == selectedCards[i].numerator);
+    }
+    for (int i =0; i<selectedCards.length; i++) {
+      points1 += selectedCards[i].points;
+    }
+    selectedCards.clear();
+  }
+
+  void orderSelectedCards(){
+    selectedCards.sort((a, b) => a.numerator.compareTo(b.numerator));
+  }
+
+
   void SelectedCard(Cards2 card) {
     if (selectedCards.contains(card)) {
       selectedCards.remove(card);
@@ -163,6 +189,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     print(bunch[bunch.length - 1].selected);
     bunch[bunch.length - 1].selected = true;
     cardsOne.add(Cards2(
+        points: bunch[bunch.length - 1].points,
         numerator: bunch[bunch.length - 1].numerator,
         color: bunch[bunch.length - 1].color,
         width: bunch[bunch.length - 1].width,
@@ -192,6 +219,86 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
       isMyTurn = true;
     });
   }
+
+  //checa se existe um melé no jogo a ser inserido
+  bool have2(){
+    bool conditional = false;
+    for (int i =0;i<selectedCards.length; i++){
+      if (selectedCards[i].number=="2")
+        return true;
+    }
+    return conditional;
+  }
+
+  //checa se existe um melé no jogo a ser inserido
+  bool haveJoker(){
+    bool conditional = false;
+    for (int i =0;i<selectedCards.length; i++){
+      if (selectedCards[i].number=="JOKER")
+        return true;
+    }
+    return conditional;
+  }
+
+  bool haveA(){
+    bool conditional = false;
+    for (int i =0;i<selectedCards.length; i++){
+      if (selectedCards[i].number=="A")
+        return true;
+    }
+    return conditional;
+  }
+
+  int count2(){
+    int count =0;
+    for (int i =0;i<selectedCards.length; i++){
+      if (selectedCards[i].number=="2")
+        count++;
+    }
+    return count;
+  }
+
+  int countJoker(){
+    int count =0;
+    for (int i =0;i<selectedCards.length; i++){
+      if (selectedCards[i].number=="JOKER")
+        count++;
+    }
+    return count;
+  }
+
+  bool validatorGame(){
+    bool conditional = true;
+    if (selectedCards.length<3){
+      editSnackBar("Selecione ao menos 3 cartas para descer um jogo.");
+      return false;
+    }
+    orderSelectedCards();
+    if (have2() || haveJoker()){
+      /*
+      caso tenha um melé ou joker validar se tem um AZ
+       */
+      if (haveA()){
+
+      } else {
+        for (int i =0; i<selectedCards.length-1; i++){
+          if (selectedCards[i].numerator != (selectedCards[i+1].numerator-1)) {
+            editSnackBar("Sequencia inválida.");
+            return false;
+          }
+        }
+      }
+    } else {
+      for (int i =0; i<selectedCards.length-1; i++){
+        if (selectedCards[i].numerator != (selectedCards[i+1].numerator-1)) {
+          editSnackBar("Sequencia inválida.");
+          return false;
+        }
+      }
+    }
+    return conditional;
+  }
+
 
   //carregando cartas do json
   Future<List<CardModel2>> ReadJsonData() async {
@@ -301,32 +408,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                             )),
                       ),
 
-                      //imagem jogador 2 adversário
-                      /* Positioned(
-                        bottom: size.height * 0.785,
-                        left: size.width * 0.05,
-                        height: size.width * 0.25,
-                        width: size.width * 0.25,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: AppColors.heading,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.fromBorderSide(
-                                  BorderSide(
-                                    color: AppColors.blue,
-                                    width: 3,
-                                  ),
-                                )),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Icon(
-                                Icons.person_rounded,
-                                color: AppColors.stroke,
-                                //size: 36.0,
-                              ),
-                            )),
-                      ),*/
-
                       //fuço
                       Positioned(
                         bottom: size.height * 0.395,
@@ -360,17 +441,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                           ),
                         ),
                       ),
-                      /*
-                      animated
-                      Positioned(
-                        left: size.width*0.05,
-                        bottom:  size.height*0.54,
-                        child: AnimatedOpacity(
-                          child: Image.asset(AppImages.heart),
-                          duration: const Duration(seconds: 10),
-                          opacity: opacity,
-                        ),
-                      ),*/
+
 
                       //container do lixo 14%
                       Positioned(
@@ -454,6 +525,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                     alignment: Alignment.bottomCenter,
                                     widthFactor: 1,
                                     child: Cards2(
+                                      points: trash[index].points,
                                       selected: trash[index].selected,
                                       color: trash[index].color,
                                       width: size.height * 0.075,
@@ -504,26 +576,14 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                               print("discarte discard = "+discard.toString());
                               if (isMyTurn) {
                                 if (discard){
+
                                   //arriar cartas selecionadas
-                                  if (selectedCards.length<3){
+                                  if (validatorGame()==false){
                                     //snack "SELECIONE AO MENOS 3 CARTAS
-                                    editSnackBar("Selecione ao menos 3 cartas para descer um jogo.");
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snack);
                                   } else {
-                                    //adicionando cartas selecionadas array de Games.
-                                    //gamesOne.add(selectedCards);
-                                    gamesOne.add(List<Cards2>.generate(
-                                        selectedCards.length,
-                                            (index) => selectedCards[index]));
-                                    for (int i =0; i<selectedCards.length; i++) {
-                                      cardsOne.removeWhere((item) => item.numerator == selectedCards[i].numerator);
-                                    }
-                                    print("gamesOne[0].length"+gamesOne[0].length.toString());
-                                    print("gamesOne[0][1].numerator."+gamesOne[0][1].numerator.toString());
-
-                                    selectedCards.clear();
-                                    //games.addAll(selectedCards);
+                                    addCardsGamesOne();
                                   }
 
                                 } else{
@@ -558,61 +618,41 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                for (var i in gamesOne)
+                                for (int i=0; i< gamesOne.length; i++)
                                   Container(
-                                    width: size.height * 0.225,
-                                    height: size.height * 0.119,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.fromBorderSide(
-                                          BorderSide(
-                                            color: AppColors.cafua,
-                                            width: 1,
-                                          ),
-                                        )),
-                                    child: ListView.builder(
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: gamesOne[0].length,
-                                        itemBuilder: (context, index) {
-                                          return Align(
-                                            alignment: Alignment.bottomCenter,
-                                            widthFactor: 1,
-                                            child: Cards2(
-                                              selected: false,
-                                              color: gamesOne[0][index].color,
-                                              width: size.height * 0.075,
-                                              height: size.height * 0.14,
-                                              naipe: gamesOne[0][index].naipe.toString(),
-                                              number: gamesOne[0][index].number.toString(),
-                                              numerator: gamesOne[0][index].numerator,
+                                      width: size.height * 0.225,
+                                      height: size.height * 0.119,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          border: Border.fromBorderSide(
+                                            BorderSide(
+                                              color: AppColors.cafua,
+                                              width: 1,
                                             ),
-                                          );
-                                        })
+                                          )),
+                                      child: ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: gamesOne[i].length,
+                                          itemBuilder: (context, index) {
+                                            return Align(
+                                              alignment: Alignment.bottomCenter,
+                                              widthFactor: 1,
+                                              child: Cards2(
+                                                points: gamesOne[i][index].points,
+                                                selected: false,
+                                                color: gamesOne[i][index].color,
+                                                width: size.height * 0.075,
+                                                height: size.height * 0.14,
+                                                naipe: gamesOne[i][index].naipe.toString(),
+                                                number: gamesOne[i][index].number.toString(),
+                                                numerator: gamesOne[i][index].numerator,
+                                              ),
+                                            );
+                                          })
 
-                                  /*
-                                        ListView.builder(
-                                                physics: const NeverScrollableScrollPhysics(),
-                                                scrollDirection: Axis.horizontal,
-                                                itemCount: gamesOne[0].length,
-                                                itemBuilder: (context, index) {
-                                                  print("tesssssssssssste"+gamesOne[0].length.toString());
-                                                  return Align(
-                                                    alignment: Alignment.bottomCenter,
-                                                    widthFactor: 1,
-                                                    child: Cards2(
-                                                      selected: gamesOne[0][index].selected,
-                                                      color: (gamesOne[0][index].color == "red")
-                                                          ? AppColors.red
-                                                          : AppColors.black,
-                                                      width: size.height * 0.075,
-                                                      height: size.height * 0.14,
-                                                      naipe: gamesOne[0][index].naipe.toString(),
-                                                      number: gamesOne[0][index].number.toString(),
-                                                      numerator: gamesOne[0][index].numerator,
-                                                    ),);
-                                                }),*/
-                                ),
+
+                                  ),
 
                               ],
                             )
@@ -641,7 +681,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                               )),
                           child: Center(
                               child: Text(
-                                'Nós: 0',
+                                'Nós: $points1',
                                 style: TextStyles.subTitleGameCard,
                               )),
                         ),
@@ -717,16 +757,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                                   .toString());
                                           if (cardsOne[index].selected ==
                                               true) {
-                                            /*print("index = "+index.toString()+" validacao in cardsOne[index].selected = "+cardsOne[index].selected.toString());
-                                            print("tamanho selectedCards = "+selectedCards.length.toString());
-                                            print("selectedCard isEmpity"+selectedCards.isEmpty.toString());
-                                            print("item removido "+selectedCards[0].selected.toString());
-                                            print("item selecionado "+cardsOne[index].selected.toString());
-                                            print("item removido "+selectedCards[0].numerator.toString());
-                                            print("item selecionado "+cardsOne[index].numerator.toString());
-                                            print("contem "+selectedCards.contains(cardsOne[index]).toString());
 
-                                             */
                                             //encontra indice a ser removido
                                             for (int i = 0;
                                             i < selectedCards.length;
@@ -789,6 +820,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                         });
                                       },
                                       child: Cards2(
+                                        points: cardsOne[index].points,
                                         selected: cardsOne[index].selected,
                                         color: (cardsOne[index].color == "red")
                                             ? AppColors.red
@@ -914,6 +946,4 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         } //aqui
     );
   }
-
-
 }
