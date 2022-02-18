@@ -221,32 +221,20 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   }
 
   //checa se existe um melé no jogo a ser inserido
-  bool have2(){
-    bool conditional = false;
-    for (int i =0;i<selectedCards.length; i++){
-      if (selectedCards[i].number=="2")
-        return true;
-    }
-    return conditional;
+  bool have2(List<Cards2> cards){
+    bool contain = cards.any((element) => element.number=="2");
+    return contain;
   }
 
   //checa se existe um melé no jogo a ser inserido
-  bool haveJoker(){
-    bool conditional = false;
-    for (int i =0;i<selectedCards.length; i++){
-      if (selectedCards[i].number=="JOKER")
-        return true;
-    }
-    return conditional;
+  bool haveJoker(List<Cards2> cards){
+    bool contain = cards.any((element) => element.number=="JOKER");
+    return contain;
   }
 
-  bool haveA(){
-    bool conditional = false;
-    for (int i =0;i<selectedCards.length; i++){
-      if (selectedCards[i].number=="A")
-        return true;
-    }
-    return conditional;
+  bool haveA(List<Cards2> cards){
+    bool contain = cards.any((element) => element.number=="A");
+    return contain;
   }
 
   int count2(){
@@ -267,26 +255,113 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     return count;
   }
 
+  String naipeGame(List<Cards2> game){
+    if (haveA(game)){
+      for (int i = 0; i < game.length; i++) {
+        if (game[i].number == "A") {
+          return game[i].naipe;
+        }
+      }
+    } else if (haveJoker(game)) {
+        if (game[0].number=="JOKER"){
+          return game[1].naipe;
+        } else{
+          return game[0].naipe;
+        }
+    } else if (have2(game)){
+      if (game[0].number=="2"){
+        return game[1].naipe;
+      } else{
+        return game[0].naipe;
+      }
+    }
+      return game[0].naipe;
+  }
+
   bool validatorGame(){
     bool conditional = true;
+    bool used2 =false;
+    bool usedJoker = false;
     if (selectedCards.length<3){
       editSnackBar("Selecione ao menos 3 cartas para descer um jogo.");
       return false;
     }
     orderSelectedCards();
-    if (have2() || haveJoker()){
+    if (have2(selectedCards) || haveJoker(selectedCards)){
       /*
       caso tenha um melé ou joker validar se tem um AZ
        */
-      if (haveA()){
+      if (haveA(selectedCards)){
+            if (have2(selectedCards)){
+              //A + 2
+              print("entrou SE = 3 "+selectedCards.last.number);
+              print("entrou SE = 3 "+selectedCards.first.numerator.toString());
+              if (selectedCards[2].number=="3"){
+                /*
+                se o 3° numero é 3 e existe um mele e um az a sequencia devera
+                ser: A 2 3 ... (ordenada)
+                 */
+                for (int i =1; i<selectedCards.length; i++){
+                  print("CARDS "+i.toString() +" - "+selectedCards[i].number);
+                  if (selectedCards[i].numerator!=(selectedCards[i-1].numerator+1)){
+                    editSnackBar("Sequencia inválida.");
+                    return false;
+                  }
+                }
+              } else {
+                print("entrou "+selectedCards.last.number);
+                /*
+                se o 3° elemento não é 3  checar jogos Q 2 A = 2 K A
+                checa se o ultimo elemento é K ou Q caso contrario return false
+                 */
 
+                if (selectedCards.last.number == "k"){
+                  print("entrou2");
+                  /*
+                    se o ultimo elemento é o "K"  empurrar o "A" para ultima posição
+                    e checar se a lista possui buracos ex. [10 J 2 K A].
+                    se não a lista ja estará ordenada.
+                   */
+
+                  //empurra o Az para a primeira posição
+                  selectedCards.add(selectedCards.first);
+                  selectedCards.removeAt(0);
+                  //checa o vetor de traz pra frente a partir do penultimo elemento
+                  for (int i= selectedCards.length-2; i>1; i--){
+
+                  }
+                } else {
+                  /*
+                    checar o [Q 2 A] já que não possui o "K"
+                   */
+                  if (selectedCards.last.number == "Q"){
+
+                  } else {
+                    /*
+                      snak jogo inválido
+                     */
+                    return false;
+                  }
+
+
+                }
+              }
+
+            } else {
+              /*
+                  jogo com A sem 2 => EX. Q K A
+                  empurra o A para ultima posição e checa do segundo indice em
+                  diante decrescente se o antecessor é igual a atual -1
+               */
+
+            }
       } else {
-        for (int i =0; i<selectedCards.length-1; i++){
-          if (selectedCards[i].numerator != (selectedCards[i+1].numerator-1)) {
-            editSnackBar("Sequencia inválida.");
-            return false;
-          }
-        }
+        /*
+            aqui afirma que não tem A
+            mas tem ao menos um mele ou um joker
+            condição = se o °¹ numero = 2 seu sucessor deverá ser um numero a
+            menos que sucessor
+         */
       }
     } else {
       for (int i =0; i<selectedCards.length-1; i++){
@@ -299,6 +374,24 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     return conditional;
   }
 
+  double getWidfactorTrash(double width, int contCards){
+    //getWidfactorTrash(size.width * 0.775, trash.length),
+    double result =1;
+    if (contCards >6)
+      result =
+      ((((width / 6) * 5) / (trash.length - 1)) / (width / 6));
+
+    //((((width * 0.7 / 6) * 5) / (cardsTwo.length - 1)) / (width * 0.7 / 6));
+    return result;
+  }
+
+  double getWidfactorGame(double width, int contCards){
+    double result =1;
+    if (contCards >3)
+      result =
+      ((((width / 3) * 2) / (contCards - 1)) / (width / 3));
+    return result;
+  }
 
   //carregando cartas do json
   Future<List<CardModel2>> ReadJsonData() async {
@@ -320,6 +413,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
             var items = data.data as List<CardModel2>;
             if (cardsOne.isEmpty) {
               darAsCartas(items, size);
+
             }
             if (cardsOne.length > 10) {
               widthFactor =
@@ -523,7 +617,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                 itemBuilder: (context, index) {
                                   return Align(
                                     alignment: Alignment.bottomCenter,
-                                    widthFactor: 1,
+                                    //color: cards[list[i]].color == "red" ? AppColors.red : AppColors.black,
+                                    widthFactor: index ==0 ? 1 : getWidfactorTrash(size.width * 0.775, trash.length),
                                     child: Cards2(
                                       points: trash[index].points,
                                       selected: trash[index].selected,
@@ -637,7 +732,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                           itemBuilder: (context, index) {
                                             return Align(
                                               alignment: Alignment.bottomCenter,
-                                              widthFactor: 1,
+                                              widthFactor: index == 0 ? 1 : getWidfactorGame(size.height * 0.225, gamesOne[i].length),
                                               child: Cards2(
                                                 points: gamesOne[i][index].points,
                                                 selected: false,
