@@ -1,5 +1,6 @@
 class CardModel2 {
   int numerator =0;
+  int orderValue =0;
   String? characters;
   int? indice;
   String? naipe;
@@ -8,7 +9,9 @@ class CardModel2 {
   int pontosCard=0;
 
   CardModel2(
-      { required this.numerator,
+      {
+        required this.orderValue,
+        required this.numerator,
         this.characters,
         this.indice,
         this.naipe,
@@ -17,6 +20,7 @@ class CardModel2 {
         required this.pontosCard});
 
   CardModel2.fromJson(Map<String, dynamic> json) {
+    orderValue = json['orderValue'];
     numerator = json['number'];
     characters = json['characters'];
     indice = json['indice'];
@@ -28,6 +32,7 @@ class CardModel2 {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['orderValue'] = this.orderValue;
     data['number'] = this.numerator;
     data['characters'] = this.characters;
     data['indice'] = this.indice;

@@ -2,6 +2,7 @@ import 'package:cafua/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Cards2 extends StatefulWidget {
+  final int orderValue;
   final int numerator;
   final double width;
   final double height;
@@ -13,6 +14,7 @@ class Cards2 extends StatefulWidget {
 
   Cards2({
     Key? key,
+    required this.orderValue,
     required this.numerator,
     required this.color,
     required this.width,

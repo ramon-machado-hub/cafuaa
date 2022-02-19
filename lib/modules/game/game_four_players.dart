@@ -64,7 +64,10 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
 
     //dar as cartas
     for (int i = 0; i < 44; i++) {
+      print(cards[list[i]].orderValue);
       cardsOne.add(Cards2(
+
+        orderValue: cards[list[i]].orderValue,
         points: cards[list[i]].pontosCard,
         numerator: cards[list[i]].numerator,
         selected: false,
@@ -75,6 +78,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i]].characters.toString(),
       ));
       cardsTwo.add(Cards2(
+        orderValue: cards[list[i+1]].orderValue,
         points: cards[list[i+1]].pontosCard,
         numerator: cards[list[i + 1]].numerator,
         selected: false,
@@ -86,6 +90,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i + 1]].characters.toString(),
       ));
       deathOne.add(Cards2(
+        orderValue: cards[list[i+2]].orderValue,
         points: cards[list[i+2]].pontosCard,
         numerator: cards[list[i + 2]].numerator,
         selected: false,
@@ -97,6 +102,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
         number: cards[list[i + 2]].characters.toString(),
       ));
       deathTwo.add(Cards2(
+        orderValue: cards[list[i+3]].orderValue,
         points: cards[list[i+3]].pontosCard,
         numerator: cards[list[i + 3]].numerator,
         selected: false,
@@ -111,6 +117,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     }
     //carta do lixo
     trash.add(Cards2(
+      orderValue: cards[list[44]].orderValue,
       points: cards[list[44]].pontosCard,
       numerator: cards[list[44]].numerator,
       selected: false,
@@ -124,6 +131,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     //cartas do morto
     for (int i = 45; i < 108; i++) {
       bunch.add(Cards2(
+        orderValue: cards[list[i]].orderValue,
         points: cards[list[i]].pontosCard,
         numerator: cards[list[i]].numerator,
         selected: false,
@@ -170,7 +178,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
   }
 
   void orderSelectedCards(){
-    selectedCards.sort((a, b) => a.numerator.compareTo(b.numerator));
+    selectedCards.sort((a, b) => a.orderValue.compareTo(b.orderValue));
   }
 
 
@@ -189,6 +197,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     print(bunch[bunch.length - 1].selected);
     bunch[bunch.length - 1].selected = true;
     cardsOne.add(Cards2(
+        orderValue: bunch[bunch.length - 1].orderValue,
         points: bunch[bunch.length - 1].points,
         numerator: bunch[bunch.length - 1].numerator,
         color: bunch[bunch.length - 1].color,
@@ -282,11 +291,16 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     bool conditional = true;
     bool used2 =false;
     bool usedJoker = false;
+    Cards2 aux;
     if (selectedCards.length<3){
       editSnackBar("Selecione ao menos 3 cartas para descer um jogo.");
       return false;
     }
     orderSelectedCards();
+    print("order = 0 "+selectedCards.first.number+" value order = "+selectedCards.first.orderValue.toString());
+    print("order = 1 "+selectedCards[1].number+" value order = "+selectedCards[1].orderValue.toString());
+    print("order = 2 "+selectedCards.last.number+" value order = "+selectedCards.last.orderValue.toString());
+
     if (have2(selectedCards) || haveJoker(selectedCards)){
       /*
       caso tenha um melé ou joker validar se tem um AZ
@@ -294,29 +308,29 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
       if (haveA(selectedCards)){
             if (have2(selectedCards)){
               //A + 2
-              print("entrou SE = 3 "+selectedCards.last.number);
-              print("entrou SE = 3 "+selectedCards.first.numerator.toString());
+
               if (selectedCards[2].number=="3"){
+                print("entrou SE = 3 "+selectedCards[2].number);
                 /*
                 se o 3° numero é 3 e existe um mele e um az a sequencia devera
                 ser: A 2 3 ... (ordenada)
                  */
                 for (int i =1; i<selectedCards.length; i++){
                   print("CARDS "+i.toString() +" - "+selectedCards[i].number);
-                  if (selectedCards[i].numerator!=(selectedCards[i-1].numerator+1)){
+                  if (selectedCards[i].orderValue!=(selectedCards[i-1].orderValue+1)){
                     editSnackBar("Sequencia inválida.");
                     return false;
                   }
                 }
               } else {
-                print("entrou "+selectedCards.last.number);
+                print("não é 3 ultimo elemento = "+selectedCards.last.number);
                 /*
                 se o 3° elemento não é 3  checar jogos Q 2 A = 2 K A
                 checa se o ultimo elemento é K ou Q caso contrario return false
                  */
 
-                if (selectedCards.last.number == "k"){
-                  print("entrou2");
+                if (selectedCards.last.number == "K"){
+                  print("entrou k");
                   /*
                     se o ultimo elemento é o "K"  empurrar o "A" para ultima posição
                     e checar se a lista possui buracos ex. [10 J 2 K A].
@@ -326,10 +340,34 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                   //empurra o Az para a primeira posição
                   selectedCards.add(selectedCards.first);
                   selectedCards.removeAt(0);
-                  //checa o vetor de traz pra frente a partir do penultimo elemento
-                  for (int i= selectedCards.length-2; i>1; i--){
 
-                  }
+                  print("K 0 "+selectedCards.first.number);
+                  print("K 1 "+selectedCards[1].number);
+                  print("K 2 "+selectedCards[2].number);
+                  print("K 3 "+selectedCards.last.number);
+                  //checa o vetor de traz pra frente a partir do penultimo elemento
+                   if (selectedCards.length>3) {
+                     for (int i = selectedCards.length - 2; i > 1; i--) {
+                       if (selectedCards[i].orderValue !=
+                           (selectedCards[i - 1].orderValue + 1)) {
+                          if (used2 == true){
+                            return false;
+                          } else {
+                            aux = selectedCards[0];
+                            for (int j =0; j<i-1; j++){
+                              selectedCards[j]=selectedCards[j+1];
+                            }
+                            selectedCards[i-1]=aux;
+                            used2=true;
+                          }
+                         print(i);
+                         print("teste "+selectedCards[i].orderValue.toString());
+                         print("teste "+selectedCards[i-1].orderValue.toString());
+
+                       }
+                     }
+
+                   }
                 } else {
                   /*
                     checar o [Q 2 A] já que não possui o "K"
@@ -620,6 +658,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                     //color: cards[list[i]].color == "red" ? AppColors.red : AppColors.black,
                                     widthFactor: index ==0 ? 1 : getWidfactorTrash(size.width * 0.775, trash.length),
                                     child: Cards2(
+                                      orderValue: trash[index].orderValue,
                                       points: trash[index].points,
                                       selected: trash[index].selected,
                                       color: trash[index].color,
@@ -734,6 +773,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                               alignment: Alignment.bottomCenter,
                                               widthFactor: index == 0 ? 1 : getWidfactorGame(size.height * 0.225, gamesOne[i].length),
                                               child: Cards2(
+                                                orderValue: gamesOne[i][index].orderValue,
                                                 points: gamesOne[i][index].points,
                                                 selected: false,
                                                 color: gamesOne[i][index].color,
@@ -881,6 +921,10 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                                 selectedCards[0]
                                                     .number
                                                     .toString());
+                                            print("order " +
+                                                selectedCards[0]
+                                                    .orderValue
+                                                    .toString());
                                             print("SelectedCards");
                                             print("numerator " +
                                                 cardsOne[index]
@@ -915,6 +959,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                         });
                                       },
                                       child: Cards2(
+                                        orderValue: cardsOne[index].orderValue,
                                         points: cardsOne[index].points,
                                         selected: cardsOne[index].selected,
                                         color: (cardsOne[index].color == "red")
