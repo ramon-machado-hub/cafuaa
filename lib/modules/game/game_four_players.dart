@@ -1,4 +1,5 @@
 import 'dart:convert';
+//import 'dart:html';
 import 'dart:math';
 
 import 'package:cafua/models/card_model2.dart';
@@ -151,7 +152,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     snack = SnackBar(
       backgroundColor: AppColors.primary,
       content: Text(message, style: TextStyles.subTitleGameCard, textAlign: TextAlign.center,),
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 2),
       margin: const EdgeInsets.fromLTRB(
           20, 20, 20, 40),
       behavior: SnackBarBehavior.floating,
@@ -300,15 +301,13 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     print("order = 0 "+selectedCards.first.number+" value order = "+selectedCards.first.orderValue.toString());
     print("order = 1 "+selectedCards[1].number+" value order = "+selectedCards[1].orderValue.toString());
     print("order = 2 "+selectedCards.last.number+" value order = "+selectedCards.last.orderValue.toString());
-
-    if (have2(selectedCards) || haveJoker(selectedCards)){
-      /*
-      caso tenha um melé ou joker validar se tem um AZ
-       */
-      if (haveA(selectedCards)){
-            if (have2(selectedCards)){
+    print("have2 "+have2(selectedCards).toString());
+    print("haveA "+haveA(selectedCards).toString());
+    print("haveJoker "+haveJoker(selectedCards).toString());
+    print((have2(selectedCards) | haveJoker(selectedCards)).toString());
+    if (haveA(selectedCards)){
+        if (have2(selectedCards)){
               //A + 2
-
               if (selectedCards[2].number=="3"){
                 print("entrou SE = 3 "+selectedCards[2].number);
                 /*
@@ -322,7 +321,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                     return false;
                   }
                 }
-              } else {
+              }
+              else {
                 print("não é 3 ultimo elemento = "+selectedCards.last.number);
                 /*
                 se o 3° elemento não é 3  checar jogos Q 2 A = 2 K A
@@ -351,6 +351,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                        if (selectedCards[i].orderValue !=
                            (selectedCards[i - 1].orderValue + 1)) {
                           if (used2 == true){
+                            editSnackBar("Sequencia inválida.");
                             return false;
                           } else {
                             aux = selectedCards[0];
@@ -373,42 +374,67 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                     checar o [Q 2 A] já que não possui o "K"
                    */
                   if (selectedCards.last.number == "Q"){
-
+                      selectedCards.add(selectedCards[1]);
+                      selectedCards.add(selectedCards[0]);
+                      selectedCards.removeRange(0, 2);
                   } else {
-                    /*
-                      snak jogo inválido
-                     */
+                    editSnackBar("Sequencia inválida.");
                     return false;
                   }
-
-
                 }
               }
 
-            } else {
+            }
+            else {
               /*
                   jogo com A sem 2 => EX. Q K A
                   empurra o A para ultima posição e checa do segundo indice em
                   diante decrescente se o antecessor é igual a atual -1
                */
+              print("--------------**************"+selectedCards.last.orderValue.toString());
+               if(selectedCards.last.orderValue!=13){
+                 editSnackBar("Sequencia inválida.");
+                 return false;
+               }
+               //checar se a sequencia é decrescente
+               for(int i=selectedCards.length-1; i>1;i--){
+                 if (selectedCards[i].orderValue!=(selectedCards[i-1].orderValue+1)){
+                   editSnackBar("Sequencia inválida.");
+                   return false;
+                 }
+               }
+               selectedCards.add(selectedCards[0]);
+               selectedCards.removeAt(0);
+            }
+      }
+      else {
+        if (have2(selectedCards)){
+          /*
+            jogo sem A com melé 2
+         */
+          for (int i =1; i<= selectedCards.length-2;i++) {
+            if (selectedCards[i].orderValue !=
+                (selectedCards[i + 1].orderValue - 1)) {
+              if (used2==true) {
+                editSnackBar("Sequencia inválida.");
+                return false;
+              }
+              else{
+                print("entrou321321321");
+                if (selectedCards[i].orderValue !=
+                    (selectedCards[i + 1].orderValue -2)) {
+                  editSnackBar("Sequencia inválida.");
+                  return false;
+                }
+                selectedCards.insert(i+1, selectedCards[0]);
+                selectedCards.removeAt(0);
+              }
 
             }
-      } else {
-        /*
-            aqui afirma que não tem A
-            mas tem ao menos um mele ou um joker
-            condição = se o °¹ numero = 2 seu sucessor deverá ser um numero a
-            menos que sucessor
-         */
-      }
-    } else {
-      for (int i =0; i<selectedCards.length-1; i++){
-        if (selectedCards[i].numerator != (selectedCards[i+1].numerator-1)) {
-          editSnackBar("Sequencia inválida.");
-          return false;
+          }
+          }
         }
-      }
-    }
+
     return conditional;
   }
 
@@ -423,15 +449,11 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
     return result;
   }
 
-  double getWidfactorGame(double width, int contCards){
-    double result =1;
-    if (contCards >3)
-      result =
-      ((((width / 3) * 2) / (contCards - 1)) / (width / 3));
-    return result;
+  double getWidfactorGame(double width, int contCards, double widthCard){
+    return 1-((widthCard-(width / contCards))/widthCard);
   }
 
-  //carregando cartas do json
+  //carregando icartas do json
   Future<List<CardModel2>> ReadJsonData() async {
     final jsondata = await rootBundle.loadString('jsonfile/cards_json.json');
     final list = json.decode(jsondata) as List<dynamic>;
@@ -589,8 +611,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                 if (selectedCards.length==1){
                                   //remover pelo indice
                                   for (int i =0; i<cardsOne.length; i++){
-                                    if (cardsOne[i].numerator ==
-                                        selectedCards[0].numerator) {
+                                    if ( (cardsOne[i].numerator ==
+                                        selectedCards[0].numerator) && (cardsOne[i].selected ==true)){
                                       setState(() {
                                         cardsOne.removeAt(i);
                                       });
@@ -750,11 +772,11 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                             child: gamesOne.isNotEmpty
                                 ?
                             Wrap(
-                              alignment: WrapAlignment.spaceBetween,
+                              alignment: WrapAlignment.spaceAround,
                               children: [
                                 for (int i=0; i< gamesOne.length; i++)
                                   Container(
-                                      width: size.height * 0.225,
+                                      width: size.width * 0.28,
                                       height: size.height * 0.119,
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(5),
@@ -770,8 +792,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> {
                                           itemCount: gamesOne[i].length,
                                           itemBuilder: (context, index) {
                                             return Align(
-                                              alignment: Alignment.bottomCenter,
-                                              widthFactor: index == 0 ? 1 : getWidfactorGame(size.height * 0.225, gamesOne[i].length),
+                                              alignment: Alignment.bottomLeft,
+                                              widthFactor:  getWidfactorGame(size.width * 0.28, gamesOne[i].length, size.height * 0.075),
                                               child: Cards2(
                                                 orderValue: gamesOne[i][index].orderValue,
                                                 points: gamesOne[i][index].points,

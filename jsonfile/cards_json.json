@@ -527,7 +527,7 @@
     "naipe": "assets/images/joker.png",
     "color": "black",
     "tpBaralho": 1,
-    "pontosCard": 10
+    "pontosCard": 50
   },
   {
     "orderValue": 14,
@@ -537,7 +537,7 @@
     "naipe": "assets/images/joker.png",
     "color": "red",
     "tpBaralho": 1,
-    "pontosCard": 10
+    "pontosCard": 50
   },
   {
     "orderValue": 1,
@@ -1067,7 +1067,7 @@
     "naipe": "assets/images/joker.png",
     "color": "black",
     "tpBaralho": 2,
-    "pontosCard": 10
+    "pontosCard": 50
   },
   {
     "orderValue": 14,
@@ -1077,6 +1077,6 @@
     "naipe": "assets/images/joker.png",
     "color": "red",
     "tpBaralho": 2,
-    "pontosCard": 10
+    "pontosCard": 50
   }
 ]
