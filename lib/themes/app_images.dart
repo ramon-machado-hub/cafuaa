@@ -1,4 +1,5 @@
 class AppImages {
+  static const triangle = "assets/images/triangle.png";
   static const joker = "assets/images/joker.png";
   static const logoFull = "assets/images/logofull.png";
   static const cardBack = "assets/images/backcard1.jpg";
