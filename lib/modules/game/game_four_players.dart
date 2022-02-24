@@ -24,15 +24,21 @@ class GameFourPlayers extends StatefulWidget {
 }
 
 class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderStateMixin {
+  int _increment = 0;
+
+  void zeroIncrement(){
+    _increment =0;
+  }
+
   bool _isPlayng = false;
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
 
   void animate() {
-      _animationController.forward();
-      setState(() {
-        _isPlayng = ! _isPlayng;
-      });
+    _animationController.forward();
+    setState(() {
+      _isPlayng = ! _isPlayng;
+    });
   }
 
   @override
@@ -115,7 +121,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
         numerator: cards[list[i + 1]].numerator,
         selected: false,
         color:
-            cards[list[i + 1]].color == "red" ? AppColors.red : AppColors.black,
+        cards[list[i + 1]].color == "red" ? AppColors.red : AppColors.black,
         height: size.height * 0.12,
         width: size.width,
         naipe: cards[list[i + 1]].naipe.toString(),
@@ -127,7 +133,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
         numerator: cards[list[i + 2]].numerator,
         selected: false,
         color:
-            cards[list[i + 2]].color == "red" ? AppColors.red : AppColors.black,
+        cards[list[i + 2]].color == "red" ? AppColors.red : AppColors.black,
         height: size.height * 0.12,
         width: size.width,
         naipe: cards[list[i + 2]].naipe.toString(),
@@ -139,7 +145,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
         numerator: cards[list[i + 3]].numerator,
         selected: false,
         color:
-            cards[list[i + 3]].color == "red" ? AppColors.red : AppColors.black,
+        cards[list[i + 3]].color == "red" ? AppColors.red : AppColors.black,
         height: size.height * 0.12,
         width: size.width,
         naipe: cards[list[i + 3]].naipe.toString(),
@@ -215,6 +221,14 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
     cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
   }
 
+  //retorna pontos do jogo a ser arriado (selectedCards)
+  int getPointsGame(List<Cards2> cards){
+    int sum =0;
+    for (int i =0;  i<cards.length;i++)
+      sum+=cards[i].points;
+    return sum;
+  }
+
   //adicionando cartas gamesOne
   void addCardsGamesOne() {
     gamesOne.add(List<Cards2>.generate(
@@ -226,6 +240,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
     for (int i = 0; i < selectedCards.length; i++) {
       points1 += selectedCards[i].points;
     }
+
     selectedCards.clear();
   }
 
@@ -527,12 +542,12 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
             }
             if (cardsOne.length > 10) {
               widthFactor =
-                  ((((width / 10) * 9) / (cardsOne.length - 1)) / (width / 10));
+              ((((width / 10) * 9) / (cardsOne.length - 1)) / (width / 10));
             }
             if (cardsTwo.length > 6) {
               widthFactor2 =
-                  ((((width * 0.7 / 6) * 5) / (cardsTwo.length - 1)) /
-                      (width * 0.7 / 6));
+              ((((width * 0.7 / 6) * 5) / (cardsTwo.length - 1)) /
+                  (width * 0.7 / 6));
             }
             return SafeArea(
               child: Scaffold(
@@ -662,7 +677,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                   //remover pelo indice
                                   for (int i = 0; i < cardsOne.length; i++) {
                                     if ((cardsOne[i].numerator ==
-                                            selectedCards[0].numerator) &&
+                                        selectedCards[0].numerator) &&
                                         (cardsOne[i].selected == true)) {
                                       setState(() {
                                         cardsOne.removeAt(i);
@@ -724,35 +739,35 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                 )),
                             child: trash.isNotEmpty
                                 ? ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: trash.length,
-                                    itemBuilder: (context, index) {
-                                      return Align(
-                                        alignment: Alignment.bottomCenter,
-                                        //color: cards[list[i]].color == "red" ? AppColors.red : AppColors.black,
-                                        widthFactor: index == 0
-                                            ? 1
-                                            : getWidfactorTrash(
-                                                size.width * 0.775,
-                                                trash.length),
-                                        child: Cards2(
-                                          orderValue: trash[index].orderValue,
-                                          points: trash[index].points,
-                                          selected: trash[index].selected,
-                                          color: trash[index].color,
-                                          width: size.height * 0.075,
-                                          height: size.height * 0.14,
-                                          naipe: trash[index].naipe.toString(),
-                                          number:
-                                              trash[index].number.toString(),
-                                          numerator: trash[index].numerator,
-                                        ),
-                                      );
-                                    })
+                                physics:
+                                const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: trash.length,
+                                itemBuilder: (context, index) {
+                                  return Align(
+                                    alignment: Alignment.bottomCenter,
+                                    //color: cards[list[i]].color == "red" ? AppColors.red : AppColors.black,
+                                    widthFactor: index == 0
+                                        ? 1
+                                        : getWidfactorTrash(
+                                        size.width * 0.775,
+                                        trash.length),
+                                    child: Cards2(
+                                      orderValue: trash[index].orderValue,
+                                      points: trash[index].points,
+                                      selected: trash[index].selected,
+                                      color: trash[index].color,
+                                      width: size.height * 0.075,
+                                      height: size.height * 0.14,
+                                      naipe: trash[index].naipe.toString(),
+                                      number:
+                                      trash[index].number.toString(),
+                                      numerator: trash[index].numerator,
+                                    ),
+                                  );
+                                })
                                 : const Center(
-                                    child: Text("DESCARTE UMA CARTA AQUI")),
+                                child: Text("DESCARTE UMA CARTA AQUI")),
                           ),
                         ),
                       ),
@@ -797,7 +812,14 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snack);
                                   } else {
+                                    _increment = 0;
+
+                                    setState(() {
+                                      _increment = getPointsGame(selectedCards);
+                                    });
+                                    print(_increment.toString()+"aaaaaaaaaaaa");
                                     addCardsGamesOne();
+
                                   }
                                 } else {
                                   //aviso "VC DEVE FUÇAR OU PEGAR O LIXO."
@@ -828,69 +850,121 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                 )),
                             child: gamesOne.isNotEmpty
                                 ? Wrap(
-                                    alignment: WrapAlignment.spaceAround,
-                                    children: [
-                                      for (int i = 0; i < gamesOne.length; i++)
-                                        Container(
-                                            width: size.width * 0.28,
-                                            height: size.height * 0.119,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                border: Border.fromBorderSide(
-                                                  BorderSide(
-                                                    color: AppColors.cafua,
-                                                    width: 1,
-                                                  ),
-                                                )),
-                                            child: ListView.builder(
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount: gamesOne[i].length,
-                                                itemBuilder: (context, index) {
-                                                  return Align(
-                                                    alignment:
-                                                        Alignment.bottomLeft,
-                                                    widthFactor:
-                                                        getWidfactorGame(
-                                                            size.width * 0.28,
-                                                            gamesOne[i].length,
-                                                            size.height *
-                                                                0.075),
-                                                    child: Cards2(
-                                                      orderValue: gamesOne[i]
-                                                              [index]
-                                                          .orderValue,
-                                                      points: gamesOne[i][index]
-                                                          .points,
-                                                      selected: false,
-                                                      color: gamesOne[i][index]
-                                                          .color,
-                                                      width:
-                                                          size.height * 0.075,
-                                                      height:
-                                                          size.height * 0.14,
-                                                      naipe: gamesOne[i][index]
-                                                          .naipe
-                                                          .toString(),
-                                                      number: gamesOne[i][index]
-                                                          .number
-                                                          .toString(),
-                                                      numerator: gamesOne[i]
-                                                              [index]
-                                                          .numerator,
-                                                    ),
-                                                  );
-                                                })),
-                                    ],
-                                  )
+                              alignment: WrapAlignment.spaceAround,
+                              children: [
+                                for (int i = 0; i < gamesOne.length; i++)
+                                  Container(
+                                      width: size.width * 0.28,
+                                      height: size.height * 0.119,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(5),
+                                          border: Border.fromBorderSide(
+                                            BorderSide(
+                                              color: AppColors.cafua,
+                                              width: 1,
+                                            ),
+                                          )),
+                                      child: ListView.builder(
+                                          physics:
+                                          const NeverScrollableScrollPhysics(),
+                                          scrollDirection:
+                                          Axis.horizontal,
+                                          itemCount: gamesOne[i].length,
+                                          itemBuilder: (context, index) {
+                                            return Align(
+                                              alignment:
+                                              Alignment.bottomLeft,
+                                              widthFactor:
+                                              getWidfactorGame(
+                                                  size.width * 0.28,
+                                                  gamesOne[i].length,
+                                                  size.height *
+                                                      0.075),
+                                              child: Cards2(
+                                                orderValue: gamesOne[i]
+                                                [index]
+                                                    .orderValue,
+                                                points: gamesOne[i][index]
+                                                    .points,
+                                                selected: false,
+                                                color: gamesOne[i][index]
+                                                    .color,
+                                                width:
+                                                size.height * 0.075,
+                                                height:
+                                                size.height * 0.14,
+                                                naipe: gamesOne[i][index]
+                                                    .naipe
+                                                    .toString(),
+                                                number: gamesOne[i][index]
+                                                    .number
+                                                    .toString(),
+                                                numerator: gamesOne[i]
+                                                [index]
+                                                    .numerator,
+                                              ),
+                                            );
+                                          })),
+                              ],
+                            )
                                 : const Center(
-                                    child: Text("INSIRA SEUS JOGOS AQUI")),
+                                child: Text("INSIRA SEUS JOGOS AQUI")),
                           ),
                         ),
                       ),
+
+                      if (points1!=0)
+                        Positioned(
+                          bottom: size.height * 0.15,
+                          left: (size.width / 2) - (size.width * 0.25) / 2,
+                          child: AnimatedTextKit(
+                            key: ValueKey<String>(_increment.toString()),
+                            repeatForever: false,
+                            totalRepeatCount: 2,
+                            animatedTexts: [
+                              ScaleAnimatedText('+ $_increment', textStyle: TextStyles.titleGameButton)
+                            ],
+                          ),
+                        ),
+
+                        /* Positioned(
+                          bottom: size.height * 0.15,
+                          left: (size.width / 2) - (size.width * 0.25) / 2,
+                          child: AnimatedSwitcher(
+                            duration: Duration(seconds: 3),
+                            transitionBuilder:
+                                (Widget child, Animation<double> animation) {
+                              return SlideTransition(
+                                child: child,
+                                position: Tween<Offset>(
+                                    begin: Offset(0.0, -0.5),
+                                    end: Offset(0.0, 0.0))
+                                    .animate(animation),
+                              );
+                            },
+                            child: Text(
+                              "++ $_increment",
+                              key: ValueKey<String>(_increment.toString()),
+                              style: TextStyle(fontSize: 25, color: Colors.white),
+                            ),
+                          ),
+                        ),*/
+                       /* Positioned(
+                          bottom: size.height * 0.15,
+                          left: (size.width / 2) - (size.width * 0.25) / 2,
+                          child: Center(
+                              child: AnimatedTextKit(
+                                repeatForever: false,
+                                totalRepeatCount: 2,
+                                onFinished: zeroIncrement,
+                                onNext: ,
+                                animatedTexts: [
+                                  ScaleAnimatedText('+ $points1', textStyle: TextStyles.titleGameButton)
+                                ],
+                              )
+                          ),
+                        ),*/
 
                       //pontuação player 0.105 bottom
                       Positioned(
@@ -924,6 +998,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                         ),
                       ),
 
+
+
                       //imagem jogador logado
                       AnimatedPositioned(
                         duration: const Duration(seconds: 1),
@@ -946,7 +1022,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                       ),
 
                       //animação fuçar
-                      showAimationSnoopMyTurn() ? Positioned(
+                      showAimationSnoopMyTurn() ?
+                      Positioned(
                         bottom: size.height * 0.55,
                         left: size.width*0.08,
                         child: ScaleTransition(
@@ -957,7 +1034,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                             child: Image.asset(AppImages.triangle),
                           ),
                         ),
-                      ) : Positioned(
+                      ) :
+                      Positioned(
                         bottom: size.height * 0.55,
                         left: size.width*0.08,
                         child: Container(
@@ -966,8 +1044,10 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                       ),
 
 
+
                       //animação pegar lixo e discarte
-                      showAimationTakeTrashMyTurn() ? Positioned(
+                      showAimationTakeTrashMyTurn() ?
+                      Positioned(
                         bottom: size.height * 0.55,
                         left: size.width*0.22,
                         child: ScaleTransition(
@@ -978,7 +1058,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                             child: Image.asset(AppImages.triangle),
                           ),
                         ),
-                      ) : Positioned(
+                      ) :
+                      Positioned(
                         bottom: size.height * 0.55,
                         left: size.width*0.22,
                         child: Container(
@@ -1005,9 +1086,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                               )),
                           child: Center(
                               child: Text(
-                            'Eles: 0',
-                            style: TextStyles.subTitleGameCard,
-                          )),
+                                'Eles: 0',
+                                style: TextStyles.subTitleGameCard,
+                              )),
                         ),
                       ),
 
@@ -1038,8 +1119,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                               true) {
                                             //encontra indice a ser removido
                                             for (int i = 0;
-                                                i < selectedCards.length;
-                                                i++) {
+                                            i < selectedCards.length;
+                                            i++) {
                                               if (selectedCards[i].numerator ==
                                                   cardsOne[index].numerator) {
                                                 print("encontrou");
@@ -1112,7 +1193,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                         height: size.height * 0.1,
                                         naipe: cardsOne[index].naipe.toString(),
                                         number:
-                                            cardsOne[index].number.toString(),
+                                        cardsOne[index].number.toString(),
                                         numerator: cardsOne[index].numerator,
                                       ),
                                     ),
@@ -1213,9 +1294,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                           width: size.width,
                           child: Center(
                               child: Text(
-                            'ANUNCIO ADMOB',
-                            style: TextStyles.titleBoldBackground,
-                          )),
+                                'ANUNCIO ADMOB',
+                                style: TextStyles.titleBoldBackground,
+                              )),
                         ),
                       ),
                     ],
@@ -1228,7 +1309,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
               child: CircularProgressIndicator(),
             );
           }
-        } 
-        );
+        }
+    );
   }
 }
