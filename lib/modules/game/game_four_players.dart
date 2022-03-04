@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 //import 'dart:html';
@@ -29,7 +30,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
   void zeroIncrement(){
     _increment =0;
   }
-
+  bool _isSniffing = false;
   bool _isPlayng = false;
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
@@ -58,7 +59,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
   }
 
 
-
+  int indexCardSnooped =0;
+  bool snooped = false;
   bool isSelected = false;
   bool isMyTurn = true;
   bool discard = false;
@@ -103,7 +105,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
 
     //dar as cartas
     for (int i = 0; i < 44; i++) {
-      print(cards[list[i]].orderValue);
       cardsOne.add(Cards2(
         orderValue: cards[list[i]].orderValue,
         points: cards[list[i]].pontosCard,
@@ -193,14 +194,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
       return false;
   }
 
-  bool showAimationTakeTrashMyTurn(){
-    if (isMyTurn==true)
-      return true;
-    else
-      return false;
-  }
-
-
   //mensagem de avisos
   void editSnackBar(String message) {
     snack = SnackBar(
@@ -256,24 +249,41 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
     }
   }
 
+  //informa qual indice a carta foi inserida na mão do player one
+  void setIndexCardsOneSnoop(Cards2 card){
+    indexCardSnooped = cardsOne.length;
+    for (int i=0; i<cardsOne.length; i++){
+      if (card.numerator< cardsOne[i].numerator){
+        print("entrou================="+i.toString());
+        print(card.numerator);
+        print(card.number);
+        indexCardSnooped = i;
+        i=cardsOne.length;
+      }
+    }
+  }
+
   //fuçar
   void snoop(int player) {
-    selectedCards.add(bunch[bunch.length - 1]);
-    print("fuçou = selected = " + selectedCards.length.toString());
-    print(bunch[bunch.length - 1].selected);
-    bunch[bunch.length - 1].selected = true;
-    cardsOne.add(Cards2(
-        orderValue: bunch[bunch.length - 1].orderValue,
-        points: bunch[bunch.length - 1].points,
-        numerator: bunch[bunch.length - 1].numerator,
-        color: bunch[bunch.length - 1].color,
-        width: bunch[bunch.length - 1].width,
-        height: bunch[bunch.length - 1].height,
-        naipe: bunch[bunch.length - 1].naipe,
-        number: bunch[bunch.length - 1].number,
-        selected: bunch[bunch.length - 1].selected));
-    bunch.remove(bunch[bunch.length - 1]);
-    orderCards();
+    Timer(const Duration(milliseconds: 1400), () {
+      setState(() {
+        selectedCards.add(bunch[bunch.length - 1]);
+        bunch[bunch.length - 1].selected = true;
+        cardsOne.add(Cards2(
+            orderValue: bunch[bunch.length - 1].orderValue,
+            points: bunch[bunch.length - 1].points,
+            numerator: bunch[bunch.length - 1].numerator,
+            color: bunch[bunch.length - 1].color,
+            width: bunch[bunch.length - 1].width,
+            height: bunch[bunch.length - 1].height,
+            naipe: bunch[bunch.length - 1].naipe,
+            number: bunch[bunch.length - 1].number,
+            selected: bunch[bunch.length - 1].selected));
+        cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
+        bunch.remove(bunch[bunch.length - 1]);
+      });
+    });
+
   }
 
   //pegar lixo
@@ -285,13 +295,16 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
 
   //jogada adversário
   void jogadaAdversario() {
-    cardsTwo.add(bunch.last);
-    bunch.removeLast();
-    cardsTwo.sort((a, b) => a.numerator.compareTo(b.numerator));
-    trash.add(cardsTwo.first);
-    cardsTwo.removeAt(0);
-    setState(() {
-      isMyTurn = true;
+
+    Timer(const Duration(seconds: 3), () {
+      setState(() {
+        cardsTwo.add(bunch.last);
+        bunch.removeLast();
+        cardsTwo.sort((a, b) => a.numerator.compareTo(b.numerator));
+        trash.add(cardsTwo.first);
+        cardsTwo.removeAt(0);
+        isMyTurn = true;
+      });
     });
   }
 
@@ -519,6 +532,24 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
     return 1 - ((widthCard - (width / contCards)) / widthCard);
   }
 
+  double getWidfactorCardsOne(double width, int contCards, double widthCard) {
+   if (contCards<=10){
+     return 1;
+   } else {
+    return  ((((width / 10) * 9) / (cardsOne.length - 1)) / (width / 10));
+   }
+  }
+
+  double getLeftAnimatedSnoop(double width, int contCards, double widthCard){
+    double wid = getWidfactorCardsOne(width, contCards, widthCard);
+    print("entrou getLeft");
+    if (contCards>10){
+      return (width / contCards)*(indexCardSnooped+1);
+    } else {
+      return widthCard - wid + (indexCardSnooped - 1) * (widthCard - wid);
+    }
+  }
+
   //carregando icartas do json
   Future<List<CardModel2>> ReadJsonData() async {
     final jsondata = await rootBundle.loadString('jsonfile/cards_json.json');
@@ -539,10 +570,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
             var items = data.data as List<CardModel2>;
             if (cardsOne.isEmpty) {
               darAsCartas(items, size);
-            }
-            if (cardsOne.length > 10) {
-              widthFactor =
-              ((((width / 10) * 9) / (cardsOne.length - 1)) / (width / 10));
             }
             if (cardsTwo.length > 6) {
               widthFactor2 =
@@ -628,40 +655,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                             )),
                       ),
 
-                      //fuço
-                      Positioned(
-                        bottom: size.height * 0.395,
-                        left: size.width * 0.05 / 2,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if ((isMyTurn)) {
-                                if (discard == false) {
-                                  //entra quando é a minha vez eesta bloqueado para descarte (false)
-                                  snoop(1); //fuçou
-                                  discard = true; //descarte está liberado
-                                } else {
-                                  //speak contendo aviso "Você já fuçou"
-                                  print("speak contendo aviso Você já fuçou");
-                                  editSnackBar("Você já fuçou.");
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snack);
-                                }
-                              } else {
-                                //speak contendo aviso "Aguarde sua vez;
-                                editSnackBar("Aguarde sua vez.");
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snack);
-                              }
-                            });
-                          },
-                          child: CardBack(
-                            width: size.width * 0.15,
-                            height: size.height * 0.13,
-                          ),
-                        ),
-                      ),
-
                       //container do lixo 14%
                       Positioned(
                         bottom: size.height * 0.395,
@@ -679,31 +672,35 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                     if ((cardsOne[i].numerator ==
                                         selectedCards[0].numerator) &&
                                         (cardsOne[i].selected == true)) {
+                                      //removeu carta descartada da mão do playerOne
                                       setState(() {
                                         cardsOne.removeAt(i);
                                       });
                                     }
                                   }
+
                                   selectedCards[selectedCards.length - 1]
                                       .selected = false;
-                                  if (trash.isEmpty) {
-                                    trash.addAll(selectedCards);
-                                  } else {
-                                    trash.add(selectedCards[0]);
-                                  }
-                                  selectedCards.clear();
+                                  setState(() {
+                                    snooped = false;
+                                  });
 
-                                  setState(() {
-                                    isMyTurn = false;
+                                  //adiciona carta ao lixo
+                                  Timer(const Duration(seconds: 2), () {
+                                      isMyTurn = false;
+                                      discard = false;
+                                    if (trash.isEmpty) {
+                                      trash.addAll(selectedCards);
+                                    } else {
+                                      trash.add(selectedCards[0]);
+                                    }
+                                    selectedCards.clear();
                                   });
-                                  discard = false;
-                                  setState(() async {
-                                    await Future.delayed(
-                                        const Duration(seconds: 2));
-                                    jogadaAdversario();
-                                  });
-                                  setState(() {
-                                    isMyTurn = true;
+
+                                  Timer(const Duration(seconds: 2), () {
+                                    setState(() {
+                                      jogadaAdversario();
+                                    });
                                   });
                                 } else {
                                   //Aviso "Selecionar uma carta para discarte"
@@ -772,27 +769,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                         ),
                       ),
 
-                      //Container com a quantidade de cartas fuço
-                      Positioned(
-                          bottom: size.height * 0.395,
-                          left: size.width * 0.05 / 2,
-                          child: Container(
-                            width: size.width * 0.07,
-                            height: size.width * 0.07,
-                            decoration: BoxDecoration(
-                              color: AppColors.cafua.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.5),
-                                  child: Text(
-                                    bunch.length.toString(),
-                                    style: TextStyles.subTitleGameCard,
-                                  ),
-                                )),
-                          )),
+
 
                       //container jogos do player logado 20%
                       Positioned(
@@ -914,6 +891,135 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                         ),
                       ),
 
+
+
+                      //imagem jogador playerOne
+                      AnimatedPositioned(
+                        duration: const Duration(seconds: 1),
+                        top: isMyTurn ? size.height * 0.71 : size.height * 0.81,
+                        left: 35,
+                        height: 80,
+                        width: 80,
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.heading,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.red,
+                                    width: 3,
+                                  ),
+                                )),
+                            child: Image.network(
+                                'https://i.imgur.com/RaXDTdX.png')),
+                      ),
+
+                      //qtd cartas player logado
+                      AnimatedPositioned(
+                          duration: Duration(seconds: 1),
+                          bottom: isMyTurn
+                              ? size.height * 0.23
+                              : size.height * 0.13,
+                          left: size.width * 0.15,
+                          child: Container(
+                            width: size.width * 0.05,
+                            height: size.width * 0.05,
+                            decoration: BoxDecoration(
+                                color: AppColors.cafua.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.fromBorderSide(
+                                  BorderSide(
+                                    color: AppColors.shape,
+                                    width: 1.5,
+                                  ),
+                                )),
+                            child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(0.5),
+                                  child: Text(
+                                    cardsOne.length.toString(),
+                                    style: TextStyles.subTitleGameCard,
+                                  ),
+                                )),
+                          )),
+
+                      //animação fuçando carta monte
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 2000),
+                        top: (snooped) ? size.height : size.height * 0.418,
+                        left: (snooped) ? getLeftAnimatedSnoop(size.width, cardsOne.length, width) : size.width * 0.05 / 2 ,
+                        width: size.width * 0.15,
+                        height: size.height * 0.13,
+                        child: AnimatedOpacity(
+                          opacity: (isMyTurn)? 1 : 0,
+                          duration: Duration(milliseconds: 10),
+                          child: CardBack(
+                            width: size.width * 0.15,
+                            height: size.height * 0.13,
+                          ),
+                        ),
+                      ),
+
+                      //fuço
+                      Positioned(
+                        bottom: size.height * 0.395,
+                        left: size.width * 0.05 / 2,
+                        child: GestureDetector(
+                          onTap: () {
+                              if ((isMyTurn)) {
+                                if (discard == false) {
+                                  //entra quando é a minha vez eesta bloqueado para descarte (false)
+                                  setState(() {
+                                    discard = true;
+                                    snooped = true;
+                                    snoop(1);//fuçou//descarte está liberado
+                                    setIndexCardsOneSnoop(bunch[bunch.length - 1]);
+                                  });
+                                } else {
+                                  //speak contendo aviso "Você já fuçou"
+                                  print("speak contendo aviso Você já fuçou");
+                                  editSnackBar("Você já fuçou.");
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
+                                }
+                              } else {
+                                //speak contendo aviso "Aguarde sua vez;
+                                editSnackBar("Aguarde sua vez.");
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snack);
+                              }
+                          },
+                          child: CardBack(
+                            width: size.width * 0.15,
+                            height: size.height * 0.13,
+                          ),
+                        ),
+                      ),
+
+                      //Container com a quantidade de cartas fuço
+                      Positioned(
+                          bottom: size.height * 0.395,
+                          left: size.width * 0.05 / 2,
+                          child: Container(
+                            width: size.width * 0.07,
+                            height: size.width * 0.07,
+                            decoration: BoxDecoration(
+                              color: AppColors.cafua.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(0.5),
+                                  child: Text(
+                                    bunch.length.toString(),
+                                    style: TextStyles.subTitleGameCard,
+                                  ),
+                                )),
+                          )),
+
+                      //animação pontuação novo jogo
                       if (points1!=0)
                         Positioned(
                           bottom: size.height * 0.15,
@@ -928,43 +1034,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                           ),
                         ),
 
-                        /* Positioned(
-                          bottom: size.height * 0.15,
-                          left: (size.width / 2) - (size.width * 0.25) / 2,
-                          child: AnimatedSwitcher(
-                            duration: Duration(seconds: 3),
-                            transitionBuilder:
-                                (Widget child, Animation<double> animation) {
-                              return SlideTransition(
-                                child: child,
-                                position: Tween<Offset>(
-                                    begin: Offset(0.0, -0.5),
-                                    end: Offset(0.0, 0.0))
-                                    .animate(animation),
-                              );
-                            },
-                            child: Text(
-                              "++ $_increment",
-                              key: ValueKey<String>(_increment.toString()),
-                              style: TextStyle(fontSize: 25, color: Colors.white),
-                            ),
-                          ),
-                        ),*/
-                       /* Positioned(
-                          bottom: size.height * 0.15,
-                          left: (size.width / 2) - (size.width * 0.25) / 2,
-                          child: Center(
-                              child: AnimatedTextKit(
-                                repeatForever: false,
-                                totalRepeatCount: 2,
-                                onFinished: zeroIncrement,
-                                onNext: ,
-                                animatedTexts: [
-                                  ScaleAnimatedText('+ $points1', textStyle: TextStyles.titleGameButton)
-                                ],
-                              )
-                          ),
-                        ),*/
 
                       //pontuação player 0.105 bottom
                       Positioned(
@@ -1000,29 +1069,8 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
 
 
 
-                      //imagem jogador logado
-                      AnimatedPositioned(
-                        duration: const Duration(seconds: 1),
-                        top: isMyTurn ? size.height * 0.71 : size.height * 0.81,
-                        left: 35,
-                        height: 80,
-                        width: 80,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: AppColors.heading,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.fromBorderSide(
-                                  BorderSide(
-                                    color: AppColors.red,
-                                    width: 3,
-                                  ),
-                                )),
-                            child: Image.network(
-                                'https://i.imgur.com/RaXDTdX.png')),
-                      ),
-
-                      //animação fuçar
-                      showAimationSnoopMyTurn() ?
+                      //animação fuçar indicador
+                      ((isMyTurn)&&(discard==false)) ?
                       Positioned(
                         bottom: size.height * 0.55,
                         left: size.width*0.08,
@@ -1042,11 +1090,9 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                           height: 20,
                           width: 20,),
                       ),
-
-
 
                       //animação pegar lixo e discarte
-                      showAimationTakeTrashMyTurn() ?
+                      (isMyTurn) ?
                       Positioned(
                         bottom: size.height * 0.55,
                         left: size.width*0.22,
@@ -1066,7 +1112,6 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                           height: 20,
                           width: 20,),
                       ),
-
 
                       //pontuação adversário
                       Positioned(
@@ -1106,7 +1151,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                                 itemBuilder: (context, index) {
                                   return Align(
                                     alignment: Alignment.bottomCenter,
-                                    widthFactor: index == 0 ? 1 : widthFactor,
+                                    widthFactor: index == 0 ? 1 : getWidfactorCardsOne(size.width, cardsOne.length, width),
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -1225,35 +1270,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                         ),
                       ),
 
-                      //qtd cartas player logado
-                      AnimatedPositioned(
-                          duration: Duration(seconds: 1),
-                          bottom: isMyTurn
-                              ? size.height * 0.23
-                              : size.height * 0.13,
-                          left: size.width * 0.15,
-                          child: Container(
-                            width: size.width * 0.05,
-                            height: size.width * 0.05,
-                            decoration: BoxDecoration(
-                                color: AppColors.cafua.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(2),
-                                border: Border.fromBorderSide(
-                                  BorderSide(
-                                    color: AppColors.shape,
-                                    width: 1.5,
-                                  ),
-                                )),
-                            child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.5),
-                                  child: Text(
-                                    cardsOne.length.toString(),
-                                    style: TextStyles.subTitleGameCard,
-                                  ),
-                                )),
-                          )),
+
 
                       //qtd cartas adversário
                       AnimatedPositioned(
