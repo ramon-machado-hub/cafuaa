@@ -1,16 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:cafua/data/cards_data.dart';
-import 'package:cafua/models/card_model.dart';
-import 'package:cafua/models/user_model.dart';
-import 'package:cafua/themes/app_colors.dart';
-import 'package:cafua/themes/app_images.dart';
-import 'package:cafua/themes/app_text_styles.dart';
-import 'package:cafua/widgets/card/card.dart';
-import 'package:cafua/widgets/cardback/card_back.dart';
-import 'package:cafua/widgets/listcardsplayer/list_cards_player.dart';
+import 'package:cafua/models/card_model3.dart';
+import 'package:cafua/widgets/card/card3.dart';
+import 'package:cafua/widgets/myhands/my_hands.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../themes/app_colors.dart';
 
 
 class GameTwoPlayers extends StatefulWidget {
@@ -21,11 +17,68 @@ class GameTwoPlayers extends StatefulWidget {
 }
 
 class _GameTwoPlayersState extends State<GameTwoPlayers> {
-  int contCardLixo = 59;
-  int contCardsPlayerOne = 11;
-  int contCardsPlayertwo = 11;
+  // AnimationController _animationController;
+  // Animation<double> _Animation;
+  // Animation<double> _sizeAnimation;
 
-  late List<Cards> items;
+  @override
+  void initState() {
+    super.initState();
+
+    // _animationController = AnimationController(
+    //   duration: Duration(milliseconds: 200),
+    //   vsync: this,
+    // );
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    //_animationController.dispose();
+  }
+  //cartas do jogo
+  List<List<CardModel3>> gamesOne = [];
+  List<List<CardModel3>> gamesTwo = [];
+  List<CardModel3> selectedCards = [];
+  List<CardModel3> cardsOne = [];
+  List<CardModel3> cardsTwo = [];
+  List<CardModel3> deathOne = [];
+  List<CardModel3> deathTwo = [];
+  List<CardModel3> trash = [];
+  List<CardModel3> bunch = [];
+
+
+
+  Future<List<CardModel3>> ReadJsonData() async {
+    final jsondata = await rootBundle.loadString('jsonfile/cards_json.json');
+    final list = json.decode(jsondata) as List<dynamic>;
+    return list.map((e) => CardModel3.fromJson(e)).toList();
+  }
+
+  void darAsCartas(List<CardModel3> cards) {
+    var random = Random();
+    List<int> randomList = [];
+    //criado uma lista de indices randomicos sem repetições
+    // referentes aos indices das cartas do baralho
+    var list = List.generate(108, (index) {
+      int verificador = random.nextInt(108);
+      while (randomList.contains(verificador)) {
+        verificador = random.nextInt(108);
+      }
+      randomList.add(verificador);
+      return verificador;
+    });
+
+    // dar as cartas embaralhadas sequencialmente:
+    // player 1, player 2, morto 1, morto 2,
+    for (int i = 0; i < 11; i++) {
+      cardsOne.add(cards[i]);
+      cardsTwo.add(cards[i+1]);
+      deathOne.add(cards[i+2]);
+      deathTwo.add(cards[i+3]);
+      i+4;
+    }
+  }
 
 
   @override
@@ -34,7 +87,88 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
         .of(context)
         .size;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    return Scaffold(
+    
+    return FutureBuilder(
+        future: ReadJsonData(),
+        builder: (context, data) {
+          if (data.hasError) {
+            print("erro ao carregar o json");
+            return Center(child: Text("${data.error}"));
+          }
+          else
+           if (data.hasData)   {
+            var items = data.data as List<CardModel3>;
+            print(items.length);
+            darAsCartas(items);
+            return SafeArea(
+                child: Scaffold(
+                  body: Container(
+                    child: Stack(
+                      children: [
+
+                        //container jogos adversários
+                        Positioned(
+                          bottom: size.height * 0.54,
+                          left: size.width * 0.05 / 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              // editSnackBar(
+                              //     "Ops! Aqui fica os jogos do adversário.");
+                              // ScaffoldMessenger.of(context).showSnackBar(snack);
+                            },
+                            child: Container(
+                              height: size.height * 0.24,
+                              width: size.width * 0.95,
+                              decoration: BoxDecoration(
+                                  color: AppColors.stroke,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.fromBorderSide(
+                                    BorderSide(
+                                      color: AppColors.cafua,
+                                      width: 1,
+                                    ),
+                                  )),
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    child: CardWidget(
+                                      width: size.width * 0.1,
+                                      height: size.height * .1,
+                                      selected: false,
+                                      card: items[0],
+                                    ),
+                                  ),
+                                  const Positioned(
+                                      bottom: 0, right: 3, child: Text("ELES")),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //cartas da mão do jogador
+                        MyHands(cards: cardsOne,)
+                      ],
+                    ),
+                  ),
+                )
+            );
+          } else {
+             return const Center(
+               child: CircularProgressIndicator(),
+             );
+          }
+        }
+
+
+    );
+    }
+
+
+      /*
+      Scaffold(
       //mesa
       body: Container(
         color: AppColors.background,
@@ -316,50 +450,6 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
 
               ),
             ),
-            /*Positioned(
-              bottom: 0,
-              child: Container(
-                height: size.height * 0.15,
-                width: size.width,
-                color: AppColors.stroke.withOpacity(0.4),
-                child: Row(
-                  children: [
-                    Cards(
-                      selected: false,
-                      width: size.width * 0.15,
-                      height: size.height * 0.15,
-                      naipe: AppImages.joker,
-                      number: 'JOKER',
-                      color: AppColors.red,
-                    ),
-                    Cards(
-                      selected: false,
-                      width: size.width * 0.15,
-                      height: size.height * 0.15,
-                      naipe: AppImages.diamond,
-                      number: '7',
-                      color: AppColors.red,
-                    ),
-                    Cards(
-                      selected: false,
-                      width: size.width * 0.15,
-                      height: size.height * 0.15,
-                      naipe: AppImages.diamond,
-                      number: '8',
-                      color: AppColors.red,
-                    ),
-                    Cards(
-                      selected: false,
-                      width: size.width * 0.15,
-                      height: size.height * 0.15,
-                      naipe: AppImages.club,
-                      number: '10',
-                      color: AppColors.cafua,
-                    ),
-                  ],
-                ),
-              ),
-            ),*/
 
             //anuncio admob
             Positioned(
@@ -377,12 +467,11 @@ class _GameTwoPlayersState extends State<GameTwoPlayers> {
       ),
       //cartas do jogador 15%
 
-    );
+    );*/
   }
 
-  Future<List<CardModel>>ReadJsonData() async {
-    final jsondata = await rootBundle.loadString('jsonfile/cards_json.json');
-    final list = json.decode(jsondata) as List<dynamic>;
-    return list.map((e) => CardModel.fromJson(e)).toList();
-  }
-}
+
+
+
+
+
