@@ -58,6 +58,11 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
     });
   }
 
+  @override
+  void dispose(){
+    super.dispose();
+    _animationController.dispose();
+  }
 
   int indexCardSnooped =0;
   bool snooped = false;
@@ -946,14 +951,15 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
 
                       //animação fuçando carta monte
                       AnimatedPositioned(
-                        duration: const Duration(milliseconds: 2000),
+                        curve: Curves.easeInOutCirc,
+                        duration: const Duration(seconds: 2),
                         top: (snooped) ? size.height : size.height * 0.418,
                         left: (snooped) ? getLeftAnimatedSnoop(size.width, cardsOne.length, width) : size.width * 0.05 / 2 ,
                         width: size.width * 0.15,
                         height: size.height * 0.13,
                         child: AnimatedOpacity(
-                          opacity: (isMyTurn)? 1 : 0,
-                          duration: Duration(milliseconds: 10),
+                          opacity: (isMyTurn)? 1 : 1,
+                          duration: Duration(seconds: 2),
                           child: CardBack(
                             width: size.width * 0.15,
                             height: size.height * 0.13,
