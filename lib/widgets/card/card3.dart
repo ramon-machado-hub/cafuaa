@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 
 class CardWidget extends StatefulWidget {
   final CardModel3 card;
-  final bool selected;
   final double height;
   final double width;
 
   CardWidget({
     Key? key,
     required this.card,
-    required this.selected,
     required this.height,
     required this.width,
   }) : super(key: key);
@@ -20,7 +18,29 @@ class CardWidget extends StatefulWidget {
   State<CardWidget> createState() => _CardWidgetState();
 }
 
-class _CardWidgetState extends State<CardWidget> {
+class _CardWidgetState extends State<CardWidget> with SingleTickerProviderStateMixin{
+
+  // late AnimationController _controller;
+  // late Animation <double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    // _controller = AnimationController(
+    //   duration: const Duration(milliseconds: 1000),
+    //   vsync: this,
+    // );
+    //
+    // _controller.forward();
+    // _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +48,7 @@ class _CardWidgetState extends State<CardWidget> {
       height: widget.height,
       width: widget.width,
       decoration: BoxDecoration(
-          color: widget.selected ? AppColors.buttonGame : AppColors.shape,
+          color: widget.card.selected ? AppColors.buttonGame : AppColors.shape,
           borderRadius: BorderRadius.circular(3),
           border: Border.fromBorderSide(
             BorderSide(

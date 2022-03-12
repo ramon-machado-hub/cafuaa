@@ -16,26 +16,26 @@ class CardBack extends StatefulWidget {
 class _CardBackState extends State<CardBack> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(1,1,0,3),
-      child: Container(
+    return Container(
           height: widget.height,
           width: widget.width,
           decoration: BoxDecoration(
-              color: AppColors.stroke,
+
               borderRadius: BorderRadius.circular(3),
               border: Border.fromBorderSide(
                 BorderSide(
-                  color: AppColors.cafua,
+                  color: AppColors.background,
                   width: 1,
                 ),
               )),
 
-        child: FittedBox(
-            fit: BoxFit.fill,
-            child: Image.asset(AppImages.cardBack))
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+                3),
 
-      ),
-    );
+            child: Image.asset(AppImages.cardBack, fit: BoxFit.fill))
+
+      );
+
   }
 }

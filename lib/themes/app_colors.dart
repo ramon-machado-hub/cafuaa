@@ -6,6 +6,7 @@ class AppColors{
   static final buttonFace = Color(0xFF4267B2);
   static final buttonGame = Color(0xFFFFFF00);
   static final primary = Color(0xFF060239);
+  static final primaryGradient = Color(0xFF3124EC);
   static final secondary = Color(0xFF282828);
   static final grey = Color(0xFF585666);
   static final delete = Color(0xFFE83F5B);

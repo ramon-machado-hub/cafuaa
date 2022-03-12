@@ -7,6 +7,7 @@ class CardModel3 {
   String color="";
   int tpBaralho=0;
   int pontosCard=0;
+  bool selected = false;
 
   CardModel3(
       {
@@ -28,6 +29,7 @@ class CardModel3 {
     color = json['color'];
     tpBaralho = json['tpBaralho'];
     pontosCard = json['pontosCard'];
+    selected = false;
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +42,7 @@ class CardModel3 {
     data['color'] = this.color;
     data['tpBaralho'] = this.tpBaralho;
     data['pontosCard'] = this.pontosCard;
+    data['selected'] = this.selected;
     return data;
   }
 }
