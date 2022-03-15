@@ -66,6 +66,13 @@ class TextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.background,
   );
+
+  static final titlePoints = GoogleFonts.lexendDeca(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: AppColors.shape,
+  );
+
   static final titleRegular = GoogleFonts.lexendDeca(
     fontSize: 20,
     fontWeight: FontWeight.w400,
