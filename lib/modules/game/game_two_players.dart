@@ -25,7 +25,9 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
 
   //final ValueNotifier<int> _counterBunch = ValueNotifier<int>(104);
   late AnimationController _controllerBarTime;
+  late AnimationController _controllerBarTime2;
   late Animation<double> _animationBarTime;
+  late Animation<double> _animationBarTime2;
   late AnimationController _controllerPulseAnimation;
   late Animation<double> _pulseAnimationBunch;
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
@@ -48,15 +50,6 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
       });
       });
 
-    _controllerPulseAnimation = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-
-    _pulseAnimationBunch = Tween<double>(begin: 0.5, end: 1.0).animate(
-        _controllerPulseAnimation);
-    // _controllerPulseAnimation.forward();
-
     _animationBarTime.addStatusListener((status) {
       if (status == AnimationStatus.completed){
         _controllerBarTime.stop();
@@ -64,6 +57,34 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
         _controllerBarTime.forward();
       }
     });
+
+    _controllerBarTime2 = AnimationController(
+      duration: const Duration(milliseconds: 8000),
+      vsync: this,
+    );
+
+    _animationBarTime2 = Tween(begin: 0.0, end: 1.0)
+        .animate(_controllerBarTime2)
+      ..addListener(() {setState(() {
+        // print(_animationBarTime.value..toString());
+      });
+      });
+
+    _animationBarTime2.addStatusListener((status) {
+      if (status == AnimationStatus.completed){
+        _controllerBarTime2.stop();
+      } else if (status == AnimationStatus.dismissed) {
+        _controllerBarTime2.forward();
+      }
+    });
+
+    _controllerPulseAnimation = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    _pulseAnimationBunch = Tween<double>(begin: 0.5, end: 1.0).animate(
+        _controllerPulseAnimation);
 
     _pulseAnimationBunch.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -124,24 +145,28 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
         insertSnoopedCard(cardsTwo);
         insertSnoopedCard(deathOne);
         insertSnoopedCard(deathTwo);
-      if (i==10){ insertSnoopedCard(trash); }
+      // if (i==10){ insertSnoopedCard(trash); }
 
-      //é gerado uma animação para cara listkey
-      await Future.delayed(const Duration(milliseconds: 360), () {
-
+      //é gerado uma animação para as cartas do player one
+      await Future.delayed(const Duration(milliseconds: 150), () {
         listKey.currentState
-            ?.insertItem(i, duration: const Duration(milliseconds: 320));
-        setState(() {
-          listKeyCardBack.currentState
-              ?.insertItem(i, duration: const Duration(milliseconds: 320));
-        });
-
-        if (i==10) {
-          listKeyTrash.currentState
-              ?.insertItem(0, duration: const Duration(milliseconds: 320));
-
-        }
+            ?.insertItem(i, duration: const Duration(milliseconds: 150));
       });
+      await Future.delayed(const Duration(milliseconds: 250), () {
+        // setState(() {
+          listKeyCardBack.currentState
+              ?.insertItem(i, duration: const Duration(milliseconds: 150));
+        // });
+      });
+
+      if (i==10) {
+        insertSnoopedCard(trash);
+        await Future.delayed(const Duration(milliseconds: 250), () {
+          listKeyTrash.currentState
+              ?.insertItem(0, duration: const Duration(milliseconds: 250));
+        });
+      }
+      setState(() { });
     }
 
     //animar a cada ordenamento
@@ -177,11 +202,6 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
     return cards.length;
   }
 
-  //retorna indice da carta que será removida
-  int getIndexRemovedCardsOne(CardModel3 card){
-    return 1;
-  }
-
   //mensagem de avisos
   void showSnackBar(String message) {
     _gameTwoController.snack = SnackBar(
@@ -197,7 +217,33 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
     );
     ScaffoldMessenger.of(context).showSnackBar(_gameTwoController.snack);    
   }
-  
+
+  //metodo jogada adversário
+  Future<void> opponentMove() async{
+    _controllerBarTime2.forward(from: 0);
+   await Future.delayed(const Duration(milliseconds: 3000), () {
+      insertSnoopedCard(cardsTwo);
+      listKeyCardBack.currentState
+          ?.insertItem(0, duration: const Duration(milliseconds: 1020));
+    });
+    _controllerBarTime2.forward(from: 0);
+   await Future.delayed(const Duration(milliseconds: 3000), () {
+      listKeyCardBack.currentState?.removeItem(
+          0,
+              (context, animation) => slidCardBack(context, 0, animation,),
+          duration: const Duration(milliseconds: 1020));
+      trash.add(cardsTwo[0]);
+      listKeyTrash.currentState
+          ?.insertItem(trash.length-1, duration: const Duration(milliseconds: 320));
+      cardsTwo.removeAt(0);
+    });
+    _controllerBarTime2.value = 0;
+    _controllerBarTime2.stop();
+    _gameTwoController.opponentMove();
+    _controllerBarTime.forward(from: 0);
+  }
+
+
   //método que insere a primeira carta do fuço a mão passada como parametro
   void insertSnoopedCard(List<CardModel3> cards) {
     if (bunch.isNotEmpty) {
@@ -207,9 +253,35 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
   }
 
   //método que adiciona cartas do lixo na mão passada como parametro.
-  void insertTrashCards(List<CardModel3> cards){
+  Future<void> insertTrashCards (List<CardModel3> cards) async {
     if (trash.isNotEmpty){
-      cards.addAll(trash);
+      // cards.addAll(trash);
+      int index = 0;
+      int cont = trash.length;
+      print("trash.length "+trash.length.toString());
+      for (int i =0; i< cont; i++){
+        // insert(getIndex(cards, bunch[0]), bunch[0]);
+        // await Future.delayed(const Duration(milliseconds: 1000), () {
+        index = getIndex(cards, trash[0]);
+        cards.insert(index, trash[0]);
+
+        print("removeu trash[$i] = " + trash[0].characters);
+        // trash.removeAt(0);
+        listKey.currentState
+            ?.insertItem(index, duration: const Duration(milliseconds: 3000));
+
+        listKeyTrash.currentState?.removeItem(
+            0,
+            (context, animation) => slideTrash(context, 0, animation),
+            // (i==(cont-1)) ? const SizedBox(height: 50, width: 50,) :
+            duration: const Duration(milliseconds: 320));
+        print("removeu trash[$i] = " + trash[0].characters);
+        trash.removeAt(0);
+        // });
+      }
+
+      // trash.clear();
+      print(trash.length);
     }
   }
 
@@ -226,17 +298,12 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
     trash.add(card);
     listKeyTrash.currentState
         ?.insertItem(trash.length-1, duration: const Duration(milliseconds: 320));
-
+    selectedCards.clear();
   }
 
   //adiciona cartas desordenadas a cards one (animação cartas entrada do jogo)
   void addSnoopedCardsOne() {
     if (bunch.isNotEmpty) {
-      // print("inseriu " +
-      //     bunch[0].numerator.toString() +
-      //     " no indice " +
-      //     getIndex(cardsOne, bunch[0]).toString());
-      // cardsOne.insert(getIndex(cardsOne, bunch[0]), bunch[0]);
       cardsOne.add(bunch[0]);
       bunch.removeAt(0);
     }
@@ -351,24 +418,29 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                           if (_gameTwoController.isMyTurn){
 
                             if(_gameTwoController.takeTrash){
-                              _controllerBarTime.forward(from: 0);
+
                               insertTrashCards(cardsOne);
+                              _controllerBarTime.forward(from: 0);
                               _gameTwoController.takeTrashCards();
                               setState(() {
 
                               });
                             } else {
+                              if (_gameTwoController.discard){
                                 if(selectedCards.length!=1){
                                   showSnackBar("Selecionar ao menos uma carta");
                                 } else {
                                   discartCard(selectedCards[0]);
                                   _controllerBarTime.value = 0;
                                   _controllerBarTime.stop();
-                                  _gameTwoController.discardCard();
+                                  _gameTwoController.discartCard();
+                                  opponentMove();
                                 }
+                              } else {
+                                showSnackBar("Aguarde sua vez");
+                              }
                             }
                           }
-
                         },
                         child: Container(
                           height: size.height * 0.1,
@@ -381,20 +453,19 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                                   width: 1.5,
                                 ),
                               )),
-                          child: SizedBox(
-                            height: size.height * 0.1,
-                            width: size.width,
-                            child: Center(
-                              child: AnimatedList(
-                                  key: listKeyTrash,
-                                  scrollDirection: Axis.horizontal,
-                                  initialItemCount: (trash.length),
-                                  itemBuilder: (context, index, animation) {
-                                    // print("entrou "+animation.value.toString());
-                                    return slideTrash(context, index, animation);
-                                  }),
-                            ),
-                          ),
+                          child:
+                          (trash.isNotEmpty) ?
+                            AnimatedList(
+                              key: listKeyTrash,
+                              scrollDirection: Axis.horizontal,
+                              initialItemCount: (trash.length),
+                              itemBuilder: (context, index, animation) {
+                                // print("entrou "+animation.value.toString()+ "index ="+index.toString());
+                                return slideTrash(context, index, animation);
+                            }) :
+
+                              const Text("Aguardando carta."),
+
                         ),
                       ),
                     ),
@@ -476,24 +547,17 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                               int index = getIndex(cardsOne, bunch[0]);
                               addSnoopedCardsOne();
                               _gameTwoController.snoopedCard();
-                              // _gameTwoController.snoopCard=false;
-                              // _gameTwoController.takeTrash=false;
-                              // _gameTwoController.discard=true;
                               _controllerBarTime.forward(from: 0);
                               listKey.currentState
                                   ?.insertItem(index, duration: const Duration(milliseconds: 3000));
-                              // Future.delayed(const Duration(milliseconds: 200), () {
-                              // });
-                              // _gameTwoController.setDiscard();
+
                             });
                           } else {
                             if (_gameTwoController.isMyTurn){
-                              showSnackBar("Você ja fuçou sua vez");
+                              showSnackBar("Você ja fuçou");
                             } else {
                               showSnackBar("Aguarde sua vez");
                             }
-
-
                           }
                         },
                         child: CardBack(
@@ -562,8 +626,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                                 initialItemCount: cardsTwo.length-1,
                                 itemBuilder: (context, index, animation) {
                                   // print(cardsTwo.length);
-                                  return slidCardBack(context, index, animation,
-                                    (size.width * 0.70), (size.width*0.1), cardsTwo.length,);
+                                 return slidCardBack(context, index, animation,);
                                 }),
                           )),
                     ),
@@ -572,7 +635,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                     Positioned(
                         top: size.height*0.137,
                         right: size.width*0.03,
-                        child: barTime(size, true)
+                        child: barTimeAnimated(_controllerBarTime2, _animationBarTime2, size),
                         // child: barTime(size, _gameTwoController.isMyTurn)
                     ),
 
@@ -580,31 +643,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                     Positioned(
                         top: size.height*0.904,
                         right: size.width*0.03,
-                        child: GestureDetector(
-                          onTap: (){
-                            print("startou");
-                            _controllerBarTime.forward(from: 0);
-                          },
-                            child: Container(
-                              width: size.width * 0.72,
-                              // color: AppColors.buttonGame,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                  border: Border.fromBorderSide(
-                                    BorderSide(
-                                      color: AppColors.buttonGame,
-                                      width: 0.5,
-                                    ),
-                                  )
-                              ),
-                              child: LinearProgressIndicator(
-                                key: ValueKey<double>(_controllerBarTime.value),
-                                minHeight: 6,
-                                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                                value:  _animationBarTime.value,
-                              ),
-                            ),
-                        ),
+                        child: barTimeAnimated(_controllerBarTime, _animationBarTime, size),
                     ),
 
                     //imagem player adversário
@@ -713,43 +752,24 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
         });
   }
 
-  //barra do tempo2
-  Widget barTime2(Size size){
+  //barra do tempo players
+  Widget barTimeAnimated (AnimationController controller, Animation animation, Size size){
     return Container(
-      width: size.width*0.42,
-      color: AppColors.buttonGame,
-      child: LinearProgressIndicator(
-        key: ValueKey<double>(_controllerBarTime.value),
-        minHeight: 6,
-        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-        value:  _animationBarTime.value,
-      ),
-    );
-  }
-
-  //barra do tempo
-  Widget barTime(Size size, bool show){
-    return AnimatedContainer(
-      duration: const Duration(seconds: 8),
-      curve: Curves.linear,
-      height: size.height * 0.01,
-      width: show? size.width * 0.72: 0.01,
+      width: size.width * 0.72,
       decoration: BoxDecoration(
-          color: show ?
-          AppColors.buttonGame : AppColors.shape,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(6),
           border: Border.fromBorderSide(
             BorderSide(
-              color: AppColors.cafua,
-              width: 0.3,
+              color: AppColors.buttonGame,
+              width: 0.5,
             ),
-          )),
-      child: AnimatedContainer(
-        color: AppColors.primary,
-        duration: Duration(seconds: 8),
-        width: _gameTwoController.isMyTurn ?
-          size.width*0.72 : 0,
-        height: size.height*0.01,
+          )
+      ),
+      child: LinearProgressIndicator(
+        key: ValueKey<double>(controller.value),
+        minHeight: 6,
+        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+        value:  animation.value,
       ),
     );
   }
@@ -828,11 +848,12 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
   }
 
   //lista cartas adversário
-  Widget slidCardBack(BuildContext context, int index, animation, double width, double widthCard, int contCards) {
+  Widget slidCardBack(BuildContext context, int index, animation,) {
+    double size = MediaQuery.of(context).size.width;
     return SlideTransition(
       child: Align(
         alignment: Alignment.bottomCenter,
-        widthFactor: getWidfactor(width, contCards, widthCard),
+        widthFactor: getWidfactor(size*0.7, cardsTwo.length, size*0.1),
         child: CardBack(
           height: MediaQuery.of(context).size.height * 0.1,
           width: MediaQuery.of(context).size.width * 0.1,
@@ -873,10 +894,11 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
 
   //lista cartas lixo
   Widget slideTrash(BuildContext context, int index, animation) {
+    double size = MediaQuery.of(context).size.width;
     return SlideTransition(
       child: Align(
         alignment: Alignment.bottomCenter,
-        widthFactor: 1,
+        widthFactor: (index==0) ?  1 : getWidfactor(size*0.656, trash.length, size*0.1),
         child: CardWidget(
             card: trash[index],
             height: MediaQuery.of(context).size.height * 0.1,

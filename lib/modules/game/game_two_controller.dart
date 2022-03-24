@@ -51,14 +51,16 @@ class GameTwoController {
       discard = true;
   }
 
-  void discardCard(){
+  void discartCard(){
     isMyTurn = false;
-    snoopCard = false;
-    takeTrash = false;
     discard = false;
   }
 
-
+  void opponentMove(){
+    isMyTurn = true;
+    snoopCard = true;
+    takeTrash = true;
+  }
 
   void setIsMyTurn(){
     isMyTurn = !isMyTurn;
