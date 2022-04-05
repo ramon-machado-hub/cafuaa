@@ -191,7 +191,7 @@ class _TablePage2State extends State<TablePage2> {
                       label: 'CONVIDAR AMIGOS',
                       colorButton: AppColors.buttonGame,
                       onTap: () {
-                        Navigator.pushNamed(context, "/test");
+                        Navigator.pushNamed(context, "/game4");
                       }),
                 ),
               ),

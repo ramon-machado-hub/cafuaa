@@ -1,41 +1,42 @@
 {
   "project_info": {
-    "project_number": "741417645024",
-    "project_id": "cafua-d3046",
-    "storage_bucket": "cafua-d3046.appspot.com"
+    "project_number": "701560829997",
+    "firebase_url": "https://cafua-aad5e-default-rtdb.firebaseio.com",
+    "project_id": "cafua-aad5e",
+    "storage_bucket": "cafua-aad5e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:741417645024:android:2cb3fba42f3c52767bb185",
+        "mobilesdk_app_id": "1:701560829997:android:b7ace516d198883aa020a4",
         "android_client_info": {
           "package_name": "com.example.cafua"
         }
       },
       "oauth_client": [
         {
-          "client_id": "741417645024-h7itlk0oikdkm290p1q1qi6nf2c8perp.apps.googleusercontent.com",
+          "client_id": "701560829997-f3njleen6129mfuj9q6b38n5hlukmmgu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.cafua",
-            "certificate_hash": "c13a8b0c02359acdde7617b93b68387db5bf1f9f"
+            "certificate_hash": "fa54270f19cb50576e46c2ee9dd72e0edf316465"
           }
         },
         {
-          "client_id": "741417645024-2unrtlns6vk06p0fksv4atil65tengl9.apps.googleusercontent.com",
+          "client_id": "701560829997-cripbh53uhp37r4v92g04g0b12nd6ire.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAivBrLgHtiEq0HWjb3CRriKRamkhkyVaE"
+          "current_key": "AIzaSyC0KCfnec84l8TsI8OA5lgempc1rWdfX9g"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "741417645024-2unrtlns6vk06p0fksv4atil65tengl9.apps.googleusercontent.com",
+              "client_id": "701560829997-cripbh53uhp37r4v92g04g0b12nd6ire.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

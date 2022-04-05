@@ -6,6 +6,9 @@ class InputTextWidget extends StatefulWidget {
   final bool obscureText;
   final String label;
   final IconData icon;
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color iconColor;
   final String? initalValue;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
@@ -18,6 +21,9 @@ class InputTextWidget extends StatefulWidget {
       required this.icon,
       required this.keyboardType,
       required this.obscureText,
+      required this.backgroundColor,
+      required this.borderColor,
+      required this.iconColor,
       this.onChanged,
       this.initalValue,
       this.validator,

@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:cafua/models/card_model3.dart';
 import 'package:cafua/modules/game/game_two_controller.dart';
+import 'package:cafua/modules/game/validator_game.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/card/card3.dart';
@@ -34,6 +35,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
   final GlobalKey<AnimatedListState> listKeyCardBack = GlobalKey<AnimatedListState>();
   final GlobalKey<AnimatedListState> listKeyTrash = GlobalKey<AnimatedListState>();
   late GameTwoController _gameTwoController;
+  final ValidatorGame _validator = ValidatorGame();
 
   @override
   void initState() {
@@ -139,13 +141,11 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
 
     // dar as cartas embaralhadas sequencialmente:
     // player 1, player 2, morto 1, morto 2,
-    int index = 0;
     for (int i = 0; i < 11; i++) {
         addSnoopedCardsOne();
         insertSnoopedCard(cardsTwo);
         insertSnoopedCard(deathOne);
         insertSnoopedCard(deathTwo);
-      // if (i==10){ insertSnoopedCard(trash); }
 
       //é gerado uma animação para as cartas do player one
       await Future.delayed(const Duration(milliseconds: 150), () {
@@ -174,12 +174,10 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
     {
       cardsOne.sort((a, b) => a.numerator.compareTo(b.numerator));
     });
+    //iniciar partida
     _gameTwoController.startGame();
     _controllerPulseAnimation.forward();
     _controllerBarTime.forward(from: 0);
-    //iniciar partida
-
-    // _gameTwoController.setDiscard();
   }
 
   //retorna o widfactor da lista de cartas
@@ -476,7 +474,24 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                       top: size.height * 0.58,
                       left: size.width * 0.05 / 2,
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          if (_gameTwoController.discard){
+                            if (_validator.isValid(selectedCards)){
+                              showSnackBar("Jogo válido");
+                              //inserir jogo
+                            } else {
+                              showSnackBar("Jogo Inválido");
+                            }
+                          } else {
+                            if (_gameTwoController.takeTrash){
+                              showSnackBar("FUÇAR ou PEGAR LIXO");
+                            } else {
+                              showSnackBar("Aguarde sua vez.");
+                            }
+                          }
+
+
+                        },
                         child: Container(
                           height: size.height * 0.32,
                           width: size.width * 0.95,
@@ -535,7 +550,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
                       ),
                     ),
 
-                    //monte do fuço
+                    //FUÇO
                     // height 10%
                     Positioned(
                       top: size.height * 0.477,
@@ -872,7 +887,7 @@ class _GameTwoPlayersState extends State<GameTwoPlayers>
     return SlideTransition(
       child: Align(
         alignment: Alignment.bottomCenter,
-        widthFactor: getWidfactor(width, cardsOne.length, width*0.1),
+        widthFactor: (index==0) ?  1 : getWidfactor(width, cardsOne.length, width*0.1),
         child: GestureDetector(
           onTap: (){
             setState(() {

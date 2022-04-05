@@ -1,5 +1,6 @@
 import 'package:cafua/controller/cadastro_page_controller.dart';
 import 'package:cafua/controller/validator.dart';
+import 'package:cafua/modules/cadastro/authentication_service.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/button/button.dart';
@@ -43,7 +44,11 @@ class CadastroPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // inputText("Nome", TextInputType.name, controller, Icons.description_outlined, false),
                 InputTextWidget(
+                  backgroundColor: AppColors.shape,
+                  borderColor: AppColors.input,
+                  iconColor: AppColors.primary,
                   obscureText: false,
                   keyboardType: TextInputType.name,
                   label: "Nome",
@@ -54,17 +59,11 @@ class CadastroPage extends StatelessWidget {
                     controllador.onChange(nome: value);
                   },
                 ),
+                // inputText("Data de Nascimento", TextInputType.datetime, controller, Icons.date_range, false),
                 InputTextWidget(
-                  obscureText: false,
-                  keyboardType: TextInputType.name,
-                  label: "Sobrenome",
-                  icon: Icons.description_outlined,
-                  validator: controller.validateName,
-                  onChanged: (value) {
-                    controllador.onChange(sobrenome: value);
-                  },
-                ),
-                InputTextWidget(
+                  backgroundColor: AppColors.shape,
+                  borderColor: AppColors.input,
+                  iconColor: AppColors.primary,
                   obscureText: false,
                   keyboardType: TextInputType.datetime,
                   label: "Data de Nascimento",
@@ -75,7 +74,11 @@ class CadastroPage extends StatelessWidget {
                     controllador.onChange(data_nascimento: value);
                   },
                 ),
+                // inputText("Email", TextInputType.emailAddress, controller,  Icons.alternate_email_outlined, false),
                 InputTextWidget(
+                  backgroundColor: AppColors.shape,
+                  borderColor: AppColors.input,
+                  iconColor: AppColors.primary,
                   obscureText: false,
                   keyboardType: TextInputType.emailAddress,
                   label: "Email",
@@ -85,7 +88,11 @@ class CadastroPage extends StatelessWidget {
                     controllador.onChange(email: value);
                   },
                 ),
+                // inputText("Senha", TextInputType.visiblePassword, controller, Icons.vpn_key_outlined, true),
                 InputTextWidget(
+                  backgroundColor: AppColors.shape,
+                  borderColor: AppColors.input,
+                  iconColor: AppColors.primary,
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   label: "Senha",
@@ -95,21 +102,41 @@ class CadastroPage extends StatelessWidget {
                     controllador.onChange(senha: value);
                   },
                 ),
+                // inputText("Confirmação de senha", TextInputType.visiblePassword, controller, Icons.vpn_key_outlined, true),
                 InputTextWidget(
+                  backgroundColor: AppColors.shape,
+                  borderColor: AppColors.input,
+                  iconColor: AppColors.primary,
                   obscureText: true,
                   keyboardType: TextInputType.name,
                   label: "Confirmação de senha",
                   icon: Icons.vpn_key_outlined,
                   validator: controller.validatePassword,
                 ),
+
                 Button(
                   colorButton: AppColors.buttonGame,
                   label: 'Cadastrar',
                   onTap: (){
-                    final isValid = _form.currentState!.validate();
-                    print('valido '+isValid.toString());
+                    if (_form.currentState!.validate()){
+                      _form.currentState!.save();
+                      AuthenticationService().signUp(
+                          email: controllador.model.email!,
+                          password: controllador.model.senha!).then((result) {
+                          if (result == null){
+                            Navigator.pushReplacementNamed(context, "/home");
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                result,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ));
+                          }
+                      });
+                    }
+                    print('valido ');
                     print(controllador.model.nome);
-                    print(controllador.model.sobrenome);
                     print(controllador.model.dataNascimento);
                     print(controllador.model.email);
                     print(controllador.model.senha);
@@ -120,6 +147,18 @@ class CadastroPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+  Widget inputText (String label, TextInputType type, Validator controller, IconData icon, bool obscureText) {
+    return InputTextWidget(
+      backgroundColor: AppColors.shape,
+      borderColor: AppColors.input,
+      iconColor: AppColors.primary,
+      obscureText: obscureText,
+      keyboardType: type,
+      label: label,
+      icon: icon,
+      validator: controller.validatePassword,
     );
   }
 }

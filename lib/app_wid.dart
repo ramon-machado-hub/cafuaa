@@ -1,3 +1,4 @@
+import 'package:cafua/arguments/login_arguments.dart';
 import 'package:cafua/arguments/table_two_arguments.dart';
 import 'package:cafua/modules/cadastro/cadastro_page.dart';
 import 'package:cafua/modules/game/game_four_players.dart';
@@ -5,6 +6,7 @@ import 'package:cafua/modules/game/game_two_players.dart';
 import 'package:cafua/modules/home_page/home_page_teste.dart';
 import 'package:cafua/modules/jogar_online/jogar_online.dart';
 import 'package:cafua/modules/jogar_online/jogar_online_player.dart';
+import 'package:cafua/modules/login/login_email_password.dart';
 import 'package:cafua/modules/login/login_page.dart';
 import 'package:cafua/modules/mesa/table_page2.dart';
 import 'package:cafua/modules/mesa/table_page4.dart';
@@ -18,10 +20,10 @@ class AppWidget extends StatelessWidget {
 
 
   AppWidget({Key? key}) : super(key: key){
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp,
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitDown,
+    //   DeviceOrientation.portraitUp,
+    // ]);
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: AppColors.background));
 
@@ -37,9 +39,11 @@ class AppWidget extends StatelessWidget {
             primarySwatch: Colors.orange, primaryColor: AppColors.primary),
         initialRoute: "/splash",
         routes: {
+          // "/test": (context) => const TesteBar(),
           "/home": (context) => const HomePageTeste(),
           "/splash": (context) => const  SplashPage(),
           "/login": (context) => const LoginPage(),
+          "/loginemail": (context) => LoginEmailPassword(arguments: ModalRoute.of(context)!.settings.arguments as LoginArguments,),
           "/cadastro": (context) => CadastroPage(),
           "/game2": (context) => const GameTwoPlayers(),
           "/game4": (context) => const GameFourPlayers(),

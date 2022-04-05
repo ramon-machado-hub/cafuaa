@@ -1,9 +1,10 @@
-import 'package:cafua/modules/entrar/login_with.dart';
 import 'package:cafua/themes/app_colors.dart';
 import 'package:cafua/themes/app_images.dart';
 import 'package:cafua/themes/app_text_styles.dart';
 import 'package:cafua/widgets/button/button.dart';
 import 'package:flutter/material.dart';
+
+import '../signin/login_with.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -51,6 +52,8 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                //cadastro
                 ButtonTheme(
                   minWidth: 200.0,
                   height: 70.0,
