@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
-//import 'dart:html';
 import 'dart:math';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cafua/models/card_model2.dart';
 import 'package:cafua/models/game_cards_model.dart';
@@ -630,6 +627,7 @@ class _GameFourPlayersState extends State<GameFourPlayers> with TickerProviderSt
                           ),
                         ),
                       ),
+
 
                       //imagem player adversário
                       AnimatedPositioned(

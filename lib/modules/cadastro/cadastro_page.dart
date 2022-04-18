@@ -134,8 +134,10 @@ class CadastroPage extends StatelessWidget {
                             ));
                           }
                       });
+                    } else {
+                      print('Invalido ');
                     }
-                    print('valido ');
+
                     print(controllador.model.nome);
                     print(controllador.model.dataNascimento);
                     print(controllador.model.email);

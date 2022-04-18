@@ -33,6 +33,11 @@ class TextStyles {
     color: AppColors.shape,
   );
 
+  static final titleWin = GoogleFonts.lilitaOne(
+    fontSize: 24,
+    fontWeight: FontWeight.w400,
+    color: AppColors.cafua,
+  );
 
   static final titleGameButton1 = GoogleFonts.sigmarOne(
     fontSize: 20,

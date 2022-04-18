@@ -2,6 +2,7 @@ import 'package:cafua/arguments/login_arguments.dart';
 import 'package:cafua/arguments/table_two_arguments.dart';
 import 'package:cafua/modules/cadastro/cadastro_page.dart';
 import 'package:cafua/modules/game/game_four_players.dart';
+import 'package:cafua/modules/game/game_resume.dart';
 import 'package:cafua/modules/game/game_two_players.dart';
 import 'package:cafua/modules/home_page/home_page_teste.dart';
 import 'package:cafua/modules/jogar_online/jogar_online.dart';
@@ -40,6 +41,7 @@ class AppWidget extends StatelessWidget {
         initialRoute: "/splash",
         routes: {
           // "/test": (context) => const TesteBar(),
+          "/gameresume": (context) => const GameResume(),
           "/home": (context) => const HomePageTeste(),
           "/splash": (context) => const  SplashPage(),
           "/login": (context) => const LoginPage(),
